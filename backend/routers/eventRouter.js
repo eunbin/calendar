@@ -1,10 +1,19 @@
 import express from "express";
-import { findEvents, findEventById, deleteEvent, updateEventDate } from "../controllers/eventController"
+import {
+  findEvents,
+  findEventById,
+  addEvent,
+  updateEventById,
+  deleteEvent,
+  updateEventDateById
+} from "../controllers/eventController"
 
 const eventRouter = express.Router();
 
 eventRouter.get('/:year/:month', findEvents);
 eventRouter.get('/:id', findEventById);
+eventRouter.post('/', addEvent);
+eventRouter.put('/:id', updateEventById);
 eventRouter.delete('/:id', deleteEvent);
-eventRouter.patch('/:id', updateEventDate);
+eventRouter.patch('/:id', updateEventDateById);
 export default eventRouter;
