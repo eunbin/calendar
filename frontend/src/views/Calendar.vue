@@ -30,6 +30,7 @@ import moment from 'moment'
 import api from '@/service/api'
 
 export default {
+  name: 'Calendar',
   data () {
     return {
       viewType: viewType.month,
