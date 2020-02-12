@@ -19,7 +19,7 @@
            @dragover.prevent
            @dragenter.prevent
            @drop.prevent="onDrop(day)"
-           @click="selectDay(day)">
+           @click.stop="selectDay(day)">
         <div class="day-num"
              :class="{ 'today': today(day) }">{{ `${day.date()}일` }}</div>
         <div class="event-list">
@@ -30,7 +30,8 @@
                draggable="true"
                @dragstart="onDragStart(event)"
                @click.stop="selectEvent(event)">
-            <div>{{ event }}</div>
+            <span>{{ event.title }}</span>
+            <span>{{ formatDate(event.startDate) }}</span>
           </div>
         </div>
       </div>
@@ -42,6 +43,9 @@
 </template>
 
 <script>
+import { dateFormat } from '@/date'
+import moment from 'moment'
+
 export default {
   name: 'CalendarView',
   props: {
@@ -122,10 +126,18 @@ export default {
       // FIXME: 이벤트끼리 겹치는 경우 drag 중인 이벤트 유실됨
       const event = this.draggingEvent
       if (event) {
-        console.log(newDate, newDate.date())
-        event.day = newDate.date()
+        const payload = {
+          ...event,
+          startDate: moment(event.startDate).date(newDate.date()),
+          endDate: moment(event.endDate).date(newDate.date())
+        }
+        this.$emit('day-changed', event, payload)
       }
       this.draggingEvent = null
+    },
+    formatDate (date) {
+      console.log(date)
+      return moment(date).format(dateFormat.HHA)
     }
   }
 }
@@ -188,17 +200,27 @@ export default {
       text-align: left;
       .event {
         display: flex;
-        &:before {
-          flex: none;
-          margin: 0 3px 0 3px;
-          content: '';
-          display: inline-block;
-          width: 10px;
-          height: 10px;
-          -moz-border-radius: 7.5px;
-          -webkit-border-radius: 7.5px;
-          border-radius: 7.5px;
-          background-color: var(--color-info);
+        justify-content: space-between;
+        padding: 3px;
+        cursor: pointer;
+        span {
+          &:first-child {
+            &:before {
+              flex: none;
+              margin: 0 3px 0 3px;
+              content: '';
+              display: inline-block;
+              width: 10px;
+              height: 10px;
+              -moz-border-radius: 7.5px;
+              -webkit-border-radius: 7.5px;
+              border-radius: 7.5px;
+              background-color: var(--color-info);
+            }
+          }
+          &:last-child {
+           font-size: .9em;
+          }
         }
         &:hover,
         &:focus {

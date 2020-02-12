@@ -12,7 +12,8 @@
       :selected-date="selectedDate"
       :events="events"
       @event-selected="onSelectEvent"
-      @day-selected="onSelectDay"></calendar-view>
+      @day-selected="onSelectDay"
+      @day-changed="onChangeDay"></calendar-view>
     <event-modal v-model="dialog"
                  :event="dialogModel"
                  @submit="onSubmit"
@@ -26,7 +27,7 @@ import CalendarView from '@/components/CalendarView'
 import EventModal from '@/components/EventModal'
 import { viewType } from '@/constant/constant'
 import moment from 'moment'
-import axios from 'axios'
+import api from '@/service/api'
 
 export default {
   data () {
@@ -37,7 +38,7 @@ export default {
       selectedDate: null,
       selectedEvent: null,
       dialog: false,
-      dialogModel: null
+      dialogModel: {}
     }
   },
   components: {
@@ -62,9 +63,8 @@ export default {
     async getEvents () {
       const year = this.currentDate.year()
       const month = this.currentDate.month() + 1
-      // TODO: split service layer
       try {
-        const res = await axios.get(`http://localhost:4000/events/${year}/${month}`)
+        const res = await api.getEvents(year, month)
         this.events = res.data
       } catch (e) {
         console.error(e)
@@ -82,6 +82,14 @@ export default {
     onChangeViewType (viewType) {
       this.viewType = viewType
     },
+    async onChangeDay ({ id }, { startDate, endDate }) {
+      try {
+        await api.updateEventDateById({ id }, { startDate, endDate })
+        this.getEvents()
+      } catch (e) {
+        console.error(e)
+      }
+    },
     onPrev () {
       if (this.viewType === viewType.month) {
         this.currentDate = this.currentDate.clone().add(-1, 'month')
@@ -92,11 +100,23 @@ export default {
         this.currentDate = this.currentDate.clone().add(1, 'month')
       }
     },
-    onSubmit (event) {
+    async onSubmit (newEvent, isAdd) {
+      if (isAdd) {
+        await api.addEvent(newEvent)
+        this.getEvents()
+      } else {
+        const { id } = newEvent
+        try {
+          await api.updateEvent(id, newEvent)
+          this.getEvents()
+        } catch (e) {
+          console.error(e)
+        }
+      }
     },
     onCloseDialog () {
       this.dialog = false
-      this.dialogModel = null
+      this.dialogModel = {}
     }
   }
 }
