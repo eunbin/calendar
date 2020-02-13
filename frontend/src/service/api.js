@@ -1,16 +1,19 @@
 import httpClient from '@/plugins/httpClient'
 
 export default {
-  getEvents (year, month) {
-    return httpClient.get(`/events/${year}/${month}`)
+  getEvents () {
+    return httpClient.get('/events')
   },
-  addEvent (newEvent) {
-    return httpClient.post('/events', newEvent)
+  addEvent (event) {
+    return httpClient.post('/events', { event })
   },
-  updateEvent (id, newEvent) {
-    return httpClient.put(`/events/${id}`, newEvent)
+  updateEventById (id, event) {
+    return httpClient.put(`/events/${id}`, { event })
   },
-  updateEventDateById ({ id }, { startDate, endDate }) {
-    return httpClient.patch(`/events/${id}`, { startDate, endDate })
+  updateEventDateById (id, { start, end }) {
+    return httpClient.patch(`/events/${id}`, { event: { start, end } })
+  },
+  deleteEvent (id) {
+    return httpClient.delete(`/events/${id}`)
   }
 }

@@ -4,29 +4,31 @@
     <div class="modal__inner">
       <button class="modal__close" @click="close"></button>
       <h2>일정 {{ isAdd ? '등록' : '수정'}}</h2>
-      <form @submit.prevent="submit">
+      <div class="form">
         <div>
           <label for="title">일정 제목</label>
           <input v-model="model.title" id="title" type="text">
         </div>
         <div>
           <label for="startDate">시작시간</label>
-          <date-pick v-model="model.startDate"
+          <date-pick v-model="model.start.dateTime"
                      start-week-on-sunday
                      pick-time
                      :format="datePickerFormat"
-                     id="startDate"></date-pick>
+                     id="startDate"
+                     @input="onChangeStartDateTime"></date-pick>
         </div>
         <div>
           <label for="endDate">종료시간</label>
-          <date-pick v-model="model.endDate"
+          <date-pick v-model="model.end.dateTime"
                      start-week-on-sunday
                      pick-time
                      :format="datePickerFormat"
-                     id="endDate"></date-pick>
+                     id="endDate"
+                     @input="onChangeEndDateTime"></date-pick>
         </div><div>
       </div>
-      </form>
+      </div>
       <p v-if="errors.length"
          class="validation">
         <b>아래 에러를 확인해주세요.</b>
@@ -37,8 +39,9 @@
         </ul>
       </p>
       <div class="modal__action">
-        <button class="accent" type="submit" @click="submit">{{ isAdd ? '등록' : '저장'}}</button>
         <button @click="close">취소</button>
+        <button v-show="!isAdd" class="accent" @click="deleteEvent">삭제</button>
+        <button class="info" @click="submit">{{ isAdd ? '등록' : '저장'}}</button>
       </div>
     </div>
   </div>
@@ -47,8 +50,9 @@
 <script>
 import DatePick from 'vue-date-pick'
 import 'vue-date-pick/dist/vueDatePick.css'
-// import { dateFormat } from '@/date'
 import moment from 'moment'
+import { cloneDeep } from 'lodash-es'
+// import { dateFormat } from '@/date'
 
 export default {
   name: 'EventModal',
@@ -59,13 +63,12 @@ export default {
       default: false
     },
     event: {
-      type: Object,
-      default: () => {}
+      type: Object
     }
   },
   data () {
     return {
-      model: {},
+      model: null,
       errors: []
     }
   },
@@ -74,55 +77,56 @@ export default {
       return !this.event.id
     },
     datePickerFormat () {
-      // return 'YYYY-MM-DD HH:mm'
-      return moment.defaultFormat
+      return 'YYYY-MM-DD HH:mm'
     }
   },
   watch: {
     event: {
+      immediate: true,
       handler () {
-        // TODO:
-        if (this.isAdd) {
-          const now = moment().minutes(0).seconds(0).milliseconds(0)
-          this.model = {
-            ...this.event,
-            startDate: now.format(),
-            endDate: now.add(1, 'hour').format()
-          }
-        } else {
-          this.model = {
-            ...this.event,
-            startDate: this.event.startDate,
-            endDate: this.event.endDate
-          }
-        }
+        this.model = cloneDeep(this.event)
         this.errors = []
-      },
-      deep: true
+      }
     }
   },
   methods: {
+    onChangeStartDateTime (val) {
+      const startDateTime = moment(val)
+      const endDateTime = startDateTime.clone().add(1, 'hour')
+      this.model.start.date = startDateTime.format('YYYY-MM-DD')
+      this.model.end.date = endDateTime.format('YYYY-MM-DD')
+      this.model.end.dateTime = endDateTime.format('YYYY-MM-DD HH:mm')
+    },
+    onChangeEndDateTime (val) {
+      const endDateTime = moment(val)
+      const startDateTime = endDateTime.clone().subtract(1, 'hour')
+      this.model.end.date = endDateTime.format('YYYY-MM-DD')
+      this.model.start.date = startDateTime.format('YYYY-MM-DD')
+      this.model.start.dateTime = startDateTime.format('YYYY-MM-DD HH:mm')
+    },
     submit () {
       if (this.isValidForm()) {
         this.$emit('submit', this.model, this.isAdd)
-        this.close()
       }
+    },
+    deleteEvent () {
+      this.$emit('delete')
     },
     close () {
       this.$emit('close')
     },
     isValidForm () {
-      if (this.model.title && this.model.startDate && this.model.endDate) {
+      if (this.model.title && this.model.start && this.model.end) {
         return true
       }
       this.errors = []
       if (!this.model.title) {
         this.errors.push('일정 제목 입력은 필수입니다.')
       }
-      if (!this.model.startDate) {
+      if (!this.model.start) {
         this.errors.push('시작날짜 입력은 필수입니다.')
       }
-      if (!this.model.endDate) {
+      if (!this.model.end) {
         this.errors.push('종료날짜 입력은 필수입니다.')
       }
       return false
@@ -178,7 +182,7 @@ export default {
     padding: 1em 2em;
     height: 700px;
 
-    & form {
+    & .form {
       margin-top: 1em;
       margin-bottom: 1em;
       input {
@@ -206,6 +210,10 @@ export default {
         text-decoration: none;
         margin: 4px 2px;
         cursor: pointer;
+        &.info {
+          background-color: var(--color-info);
+          color: white;
+        }
         &.accent {
           background-color: var(--color-accent);
           color: white;

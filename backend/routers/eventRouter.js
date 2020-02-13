@@ -10,7 +10,7 @@ import {
 
 const eventRouter = express.Router();
 
-eventRouter.get('/:year/:month', findEvents);
+eventRouter.get('/', findEvents);
 eventRouter.get('/:id', findEventById);
 eventRouter.post('/', addEvent);
 eventRouter.put('/:id', updateEventById);

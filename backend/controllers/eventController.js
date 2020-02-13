@@ -1,4 +1,3 @@
-// TODO: connect db
 import moment from "moment";
 
 const uuid = () => {
@@ -6,76 +5,179 @@ const uuid = () => {
     const r = Math.random() * 16 | 0, v = c === 'x' ? r : (r & 0x3 | 0x8);
     return v.toString(16);
   });
-}
+};
+
+// TODO: connect db
+/**
+ * id:
+ * title:
+ * startDate:
+ * EndDate:
+ * createdAt:
+ * @type {*[]}
+ */
 let events = [
-  { id: '1', title: 'event1', year: 2020, month: 2, day: 7, startDate: moment([2020, 1, 7, 12]).format(), endDate: moment([2020, 1, 7, 13]).format() },
-  { id: '2', title: 'event2', year: 2020, month: 2, day: 8, startDate: moment([2020, 1, 8, 1]).format(), endDate: moment([2020, 1, 8, 2]).format() },
-  { id: '3', title: 'event3', year: 2020, month: 1, day: 4, startDate: moment([2020, 2, 4, 0]).format(), endDate: moment([2020, 2, 4, 1]).format() }
+  {
+    id: uuid(),
+    title: 'event1',
+    start: {
+      date: moment({ year: 2020, month: 1, day: 7, hour: 23}).format('YYYY-MM-DD'),
+      dateTime: moment({ year: 2020, month: 1, day: 7, hour: 23}).format('YYYY-MM-DD HH:mm')
+    },
+    end: {
+      date: moment({ year: 2020, month: 1, day: 7, hour: 24}).format('YYYY-MM-DD'),
+      dateTime: moment({ year: 2020, month: 1, day: 7, hour: 24}).format('YYYY-MM-DD HH:mm')
+    },
+    createdAt: moment().format('YYYY-MM-DD HH:mm')
+  },
+  {
+    id: uuid(),
+    title: 'event2',
+    start: {
+      date: moment({ year: 2020, month: 1, day: 5, hour: 14}).format('YYYY-MM-DD'),
+      dateTime: moment({ year: 2020, month: 1, day: 5, hour: 14}).format('YYYY-MM-DD HH:mm')
+    },
+    end: {
+      date: moment({ year: 2020, month: 1, day: 5, hour: 15}).format('YYYY-MM-DD'),
+      dateTime: moment({ year: 2020, month: 1, day: 5, hour: 15}).format('YYYY-MM-DD HH:mm')
+    },
+    createdAt: moment().format('YYYY-MM-DD HH:mm')
+  },
+  {
+    id: uuid(),
+    title: 'event3',
+    start: {
+      date: moment({ year: 2020, month: 1, day: 4, hour: 14}).format('YYYY-MM-DD'),
+      dateTime: moment({ year: 2020, month: 1, day: 4, hour: 14}).format('YYYY-MM-DD HH:mm')
+    },
+    end: {
+      date:moment({ year: 2020, month: 1, day: 4, hour: 15}).format('YYYY-MM-DD'),
+      dateTime: moment({ year: 2020, month: 1, day: 4, hour: 15}).format('YYYY-MM-DD HH:mm')
+    },
+    createdAt: moment().format('YYYY-MM-DD HH:mm')
+  },
+  {
+    id: uuid(),
+    title: 'event4',
+    start: {
+      date: moment({ year: 2020, month: 1, day: 5, hour: 18}).format('YYYY-MM-DD'),
+      dateTime: moment({ year: 2020, month: 1, day: 5, hour: 18}).format('YYYY-MM-DD HH:mm'),
+    },
+    end: {
+      date: moment({ year: 2020, month: 1, day: 5, hour: 19}).format('YYYY-MM-DD'),
+      dateTime: moment({ year: 2020, month: 1, day: 5, hour: 19}).format('YYYY-MM-DD HH:mm'),
+    },
+    createdAt: moment().format('YYYY-MM-DD HH:mm')
+  },
+  {
+    id: uuid(),
+    title: 'event5',
+    start: {
+      date: moment({ year: 2020, month: 2, day: 5, hour: 12}).format('YYYY-MM-DD'),
+      dateTime: moment({ year: 2020, month: 2, day: 5, hour: 12}).format('YYYY-MM-DD HH:mm'),
+    },
+    end: {
+      date: moment({ year: 2020, month: 2, day: 5, hour: 13}).format('YYYY-MM-DD'),
+      dateTime: moment({ year: 2020, month: 2, day: 5, hour: 13}).format('YYYY-MM-DD HH:mm')
+    },
+    createdAt: moment().format('YYYY-MM-DD HH:mm')
+  }
 ];
 
+const validStartDate = (id, start) => {
+  const { date, dateTime } = start;
+  const obj = moment(dateTime);
+  const sameDateEvents = events.filter(event => {
+      return id !== event.id && event.start.date === date;
+    }
+  );
+  return !sameDateEvents.some(event => moment(event.start.dateTime).isSame(obj));
+};
+
 const findEvents = (req, res) => {
-  const { params: { year, month } } = req;
-  const result = events.filter(event => event.year === parseInt(year) && event.month === parseInt(month));
-  res.json(result);
+  const result = events.sort((a, b) => moment(a.start.dateTime).unix() - moment(b.start.dateTime).unix());
+  res.json({ data: result });
 };
 
 const findEventById = (req, res) => {
   const { params: { id } } = req;
   if (!id) {
-    res.status(400).json({ code:'FAIL', message: 'event id is required' });
+    res.status(400).json({ result: false, message: 'id 는 필수 파라미터입니다.' });
   }
   const event = events.find(event => event.id === id);
   if (event) {
-    res.json(event);
+    res.json({ data: event });
   } else {
-    res.status(404).json({ code:'FAIL', message: 'event not found' });
+    res.status(404).json({ result: false, message: '동일한 아이디를 가진 일정을 찾을 수 없습니다.' });
   }
 };
 
 const addEvent = (req, res) => {
-  const { body } = req;
-  const newEvent = {
-    ...body,
-    id: uuid(),
-    year: moment(body.startDate).year(),
-    month: moment(body.startDate).month() + 1,
-    day: moment(body.startDate).date()
+  const { body: { event } } = req;
+  if (!validStartDate(event.id, event.start)) {
+    return res.status(409).json({ result: false, message: '동일한 시간에 일정이 존재합니다.' });
   }
-  events = [...events, newEvent]
-  res.json({ code: 'SUCCESS', message: 'event added successfully', data: newEvent });
-}
+  const newEvent = {
+    id: uuid(),
+    ...event
+  };
+  events = [...events, newEvent];
+  res.json({ result: true, message: '일정이 추가되었습니다.', data: newEvent });
+};
 
 const updateEventById = (req, res) => {
-  const { params: { id }, body: { title, startDate, endDate } } = req;
-  const event = events.find(event => event.id === id);
-  event.title = title;
-  event.startDate = startDate;
-  event.endDate = endDate;
-  event.year = moment(startDate).year();
-  event.month = moment(startDate).month() + 1;
-  event.day = moment(startDate).date();
-  res.json({ code: 'SUCCESS', message: 'event updated successfully', data: event });
-}
+  const { params: { id }, body: { event } } = req;
+  if (!validStartDate(id, event.start)) {
+    return res.status(409).json({ result: false, message: '동일한 시간에 일정이 존재합니다.' });
+  }
+  const objIndex = events.findIndex(obj => obj.id === id);
+  if (objIndex > -1) {
+    const oldEvent = events[objIndex];
+    const newEvent = {
+      ...oldEvent,
+      title: event.title,
+      start: event.start,
+      end: event.end
+    }
+    events = [
+      ...events.slice(0, objIndex),
+      newEvent,
+      ...events.slice(objIndex + 1),
+    ];
+    res.json({ result: true, message: '일정 정보가 수정되었습니다.', data: newEvent });
+  } else {
+    res.json({ result: false, message: '동일한 아이디를 가진 일정을 찾을 수 없습니다.' });
+  }
+};
 
 const updateEventDateById = (req, res) => {
-  const { params: { id }, body: { startDate, endDate } } = req;
-  const event = events.find(event => event.id === id);
-  event.startDate = startDate;
-  event.endDate = endDate;
-  event.year = moment(startDate).year();
-  event.month = moment(startDate).month() + 1;
-  event.day = moment(startDate).date();
-  res.json({ code: 'SUCCESS', message: 'event updated successfully', data: event });
-  console.log(events)
+  const { params: { id }, body: { event: { start, end }} } = req;
+
+  if (!validStartDate(id, start)) {
+    return res.status(409).json({ result: false, message: '동일한 시간에 일정이 존재합니다.' });
+  }
+
+  const objIndex = events.findIndex(obj => obj.id === id);
+  if (objIndex > -1) {
+    const event = events[objIndex];
+    events = [
+      ...events.slice(0, objIndex),
+      { ...event, start, end },
+      ...events.slice(objIndex + 1),
+    ];
+    res.json({ result: true, message: '일정의 일자가 수정되었습니다.', data: event });
+  } else {
+    res.json({ result: false, message: '동일한 아이디를 가진 일정을 찾을 수 없습니다.' });
+  }
 };
 
 const deleteEvent = (req, res) => {
   const { params: { id } } = req;
   if (!id) {
-    res.status(400).json({ code:'FAIL', message: 'event id is required' });
+    res.status(400).json({ result: false, message: 'id 는 필수 파라미터입니다.' });
   }
   events = events.filter(event => event.id !== id);
-  res.json({ code: 'SUCCESS', message: 'event deleted successfully' });
+  res.json({ result: true, message: '해당 일정이 삭제되었습니다.' });
 };
 
 export {

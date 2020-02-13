@@ -17,6 +17,7 @@
     <event-modal v-model="dialog"
                  :event="dialogModel"
                  @submit="onSubmit"
+                 @delete="onDelete"
                  @close="onCloseDialog"></event-modal>
   </div>
 </template>
@@ -39,7 +40,7 @@ export default {
       selectedDate: null,
       selectedEvent: null,
       dialog: false,
-      dialogModel: {}
+      dialogModel: null
     }
   },
   components: {
@@ -51,10 +52,10 @@ export default {
   },
   watch: {
     currentDate () {
-      this.getEvents()
     }
   },
   created () {
+    this.resetDialogModel()
     this.selectedDate = this.currentDate
 
     this.currentDate = moment()
@@ -62,13 +63,11 @@ export default {
   },
   methods: {
     async getEvents () {
-      const year = this.currentDate.year()
-      const month = this.currentDate.month() + 1
       try {
-        const res = await api.getEvents(year, month)
-        this.events = res.data
+        const { data: { data } } = await api.getEvents()
+        this.events = data
       } catch (e) {
-        console.error(e)
+        setTimeout(() => alert((e.response && e.response.data.message) || e))
       }
     },
     onSelectEvent (event) {
@@ -77,18 +76,36 @@ export default {
       this.dialog = true
       this.dialogModel = event
     },
-    onSelectDay (day) {
+    onSelectDay (selectedDay) {
+      const now = moment().hours()
+      const startDateTime = selectedDay.clone().hours(now)
+      const endDateTime = startDateTime.clone().add(1, 'hour')
+      this.dialogModel = {
+        title: '',
+        start: {
+          date: startDateTime.format('YYYY-MM-DD'),
+          dateTime: startDateTime.format('YYYY-MM-DD HH:mm')
+        },
+        end: {
+          date: endDateTime.format('YYYY-MM-DD'),
+          dateTime: endDateTime.format('YYYY-MM-DD HH:mm')
+        }
+      }
       this.dialog = true
     },
     onChangeViewType (viewType) {
       this.viewType = viewType
     },
-    async onChangeDay ({ id }, { startDate, endDate }) {
+    async onChangeDay (id, { start, end }) {
       try {
-        await api.updateEventDateById({ id }, { startDate, endDate })
-        this.getEvents()
+        const { data: { result, message } } = await api.updateEventDateById(id, { start, end })
+        if (result) {
+          this.getEvents()
+        } else {
+          setTimeout(() => alert(message))
+        }
       } catch (e) {
-        console.error(e)
+        setTimeout(() => alert((e.response && e.response.data.message) || e))
       }
     },
     onPrev () {
@@ -101,23 +118,72 @@ export default {
         this.currentDate = this.currentDate.clone().add(1, 'month')
       }
     },
-    async onSubmit (newEvent, isAdd) {
-      if (isAdd) {
-        await api.addEvent(newEvent)
-        this.getEvents()
-      } else {
-        const { id } = newEvent
-        try {
-          await api.updateEvent(id, newEvent)
+    async addEvent (newEvent) {
+      try {
+        const { data: { result, message, data } } = await api.addEvent(newEvent)
+        if (result) {
+          this.dialog = false
           this.getEvents()
-        } catch (e) {
-          console.error(e)
+          this.selectedEvent = data
+        } else {
+          setTimeout(() => alert(message))
         }
+      } catch (e) {
+        setTimeout(() => alert((e.response && e.response.data.message) || e))
+      }
+    },
+    async updateEventById (newEvent) {
+      const { id } = newEvent
+      try {
+        const { data: { result, message } } = await api.updateEventById(id, newEvent)
+        if (result) {
+          this.dialog = false
+          this.getEvents()
+        } else {
+          setTimeout(() => alert(message))
+        }
+      } catch (e) {
+        setTimeout(() => alert((e.response && e.response.data.message) || e))
+      }
+    },
+    onSubmit (newEvent, isAdd) {
+      if (isAdd) {
+        this.addEvent(newEvent)
+      } else {
+        this.updateEventById(newEvent)
+      }
+    },
+    async onDelete () {
+      try {
+        const { data: { result, message } } = await api.deleteEvent(this.dialogModel.id)
+        if (result) {
+          this.dialog = false
+          await this.getEvents()
+          setTimeout(() => alert('일정이 삭제되었습니다.'))
+        } else {
+          setTimeout(() => alert(message))
+        }
+      } catch (e) {
+        setTimeout(() => alert((e.response && e.response.data.message) || e))
       }
     },
     onCloseDialog () {
       this.dialog = false
-      this.dialogModel = {}
+      this.resetDialogModel()
+    },
+    resetDialogModel () {
+      this.dialogModel = {
+        id: '',
+        title: '',
+        start: {
+          date: '',
+          dateTime: ''
+        },
+        end: {
+          date: '',
+          dateTime: ''
+        }
+      }
     }
   }
 }

@@ -23,15 +23,15 @@
         <div class="day-num"
              :class="{ 'today': today(day) }">{{ `${day.date()}일` }}</div>
         <div class="event-list">
-          <div v-for="(event, index) in getEvents(day.date())"
+          <div v-for="(event, index) in eventsMap[day.format('YYYY-MM-DD')]"
                :key="index"
-               :class="{ 'is-selected': event.selected }"
+               :class="{ 'selected': event.selected }"
                class="event"
                draggable="true"
                @dragstart="onDragStart(event)"
                @click.stop="selectEvent(event)">
             <span>{{ event.title }}</span>
-            <span>{{ formatDate(event.startDate) }}</span>
+            <span>{{ formatDate(event.start.dateTime) }}</span>
           </div>
         </div>
       </div>
@@ -73,19 +73,24 @@ export default {
   data () {
     return {
       days: [],
+      eventsMap: {},
       draggingEvent: null
     }
   },
   watch: {
-    viewType () {
+    events () {
+      this.eventsMap = this.events.reduce((res, event) => {
+        if (res[event.start.date]) {
+          res[event.start.date].push(event)
+        } else {
+          res[event.start.date] = [event]
+        }
+        return res
+      }, {})
     },
     currentDate () {
       this.buildDays()
-    },
-    selectedEvent () {
     }
-  },
-  created () {
   },
   mounted () {
     this.buildDays()
@@ -113,30 +118,29 @@ export default {
     selectDay (date) {
       this.$emit('day-selected', date)
     },
-    getEvents (date) {
-      // TODO: sort by startDate
-      return this.events.filter(event => event.day === parseInt(date))
-    },
     onDragStart (event) {
-      console.log('onDragStart')
       this.draggingEvent = event
     },
     onDrop (newDate) {
-      console.log('onDrop')
-      // FIXME: 이벤트끼리 겹치는 경우 drag 중인 이벤트 유실됨
       const event = this.draggingEvent
       if (event) {
+        const { start, end } = event
         const payload = {
           ...event,
-          startDate: moment(event.startDate).date(newDate.date()),
-          endDate: moment(event.endDate).date(newDate.date())
+          start: {
+            date: moment(start.date).date(newDate.date()).format('YYYY-MM-DD'),
+            dateTime: moment(start.dateTime).date(newDate.date()).format('YYYY-MM-DD HH:mm')
+          },
+          end: {
+            date: moment(end.date).date(newDate.date()).format('YYYY-MM-DD'),
+            dateTime: moment(end.dateTime).date(newDate.date()).format('YYYY-MM-DD HH:mm')
+          }
         }
-        this.$emit('day-changed', event, payload)
+        this.$emit('day-changed', event.id, payload)
       }
       this.draggingEvent = null
     },
     formatDate (date) {
-      console.log(date)
       return moment(date).format(dateFormat.HHA)
     }
   }
@@ -153,7 +157,6 @@ export default {
   .date-grid {
     display: grid;
     grid-template-columns: repeat(7, 1fr);
-    grid-template-rows: auto;
   }
   .date-grid {
     height: 100%;
@@ -173,6 +176,7 @@ export default {
 
   .date-grid {
     margin-top: 0.5em;
+    grid-template-rows: repeat(5, 1fr);
   }
 
   .date-grid .day {
@@ -184,6 +188,7 @@ export default {
     border: 1px solid #000;
     background-color: transparent;
     color: var(--color-text);
+    overflow: auto;
 
     .day-num {
       display: flex;
@@ -232,7 +237,7 @@ export default {
         &:active {
           color: var(--color-secondary);
         }
-        &.is-selected {
+        &.selected {
           background-color: var(--color-primary);
         }
       }
