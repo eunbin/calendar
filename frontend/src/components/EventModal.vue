@@ -89,6 +89,12 @@ export default {
       }
     }
   },
+  created () {
+    this.addEventListeners()
+  },
+  beforeDestroy () {
+    this.removeEventListeners()
+  },
   methods: {
     onChangeStartDateTime (val) {
       const startDateTime = moment(val)
@@ -130,6 +136,25 @@ export default {
         this.errors.push('종료날짜 입력은 필수입니다.')
       }
       return false
+    },
+    handleKeyDown (e) {
+      const keyCode = e.keyCode
+      if (keyCode === 27) {
+        this.close()
+      }
+    },
+    handleClick (e) {
+      if (!e.target.closest('.modal__inner')) {
+        this.close()
+      }
+    },
+    addEventListeners () {
+      document.addEventListener('keydown', this.handleKeyDown)
+      document.addEventListener('click', this.handleClick)
+    },
+    removeEventListeners () {
+      document.addEventListener('keydown', this.handleKeyDown)
+      document.addEventListener('click', this.handleClick)
     }
   }
 }
