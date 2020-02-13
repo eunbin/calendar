@@ -71,10 +71,13 @@ export default {
       }
     },
     onSelectEvent (event) {
-      this.events.filter(event => event.selected).forEach(event => (event.selected = false))
-      this.$set(event, 'selected', !event.selected)
+      this.selectEvent(event)
       this.dialog = true
       this.dialogModel = event
+    },
+    selectEvent (event) {
+      this.events.filter(event => event.selected).forEach(event => (event.selected = false))
+      this.$set(event, 'selected', !event.selected)
     },
     onSelectDay (selectedDay) {
       const now = moment().hours()
@@ -98,9 +101,11 @@ export default {
     },
     async onChangeDay (id, { start, end }) {
       try {
-        const { data: { result, message } } = await api.updateEventDateById(id, { start, end })
+        const { data: { result, message, data } } = await api.updateEventDateById(id, { start, end })
         if (result) {
-          this.getEvents()
+          await this.getEvents()
+          const event = this.events.find(event => event.id === data.id)
+          this.selectEvent(event)
         } else {
           setTimeout(() => alert(message))
         }
@@ -123,8 +128,9 @@ export default {
         const { data: { result, message, data } } = await api.addEvent(newEvent)
         if (result) {
           this.dialog = false
-          this.getEvents()
-          this.selectedEvent = data
+          await this.getEvents()
+          const event = this.events.find(event => event.id === data.id)
+          this.selectEvent(event)
         } else {
           setTimeout(() => alert(message))
         }
@@ -135,10 +141,12 @@ export default {
     async updateEventById (newEvent) {
       const { id } = newEvent
       try {
-        const { data: { result, message } } = await api.updateEventById(id, newEvent)
+        const { data: { result, message, data } } = await api.updateEventById(id, newEvent)
         if (result) {
           this.dialog = false
-          this.getEvents()
+          await this.getEvents()
+          const event = this.events.find(event => event.id === data.id)
+          this.selectEvent(event)
         } else {
           setTimeout(() => alert(message))
         }
