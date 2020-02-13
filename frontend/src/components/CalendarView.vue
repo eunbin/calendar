@@ -1,50 +1,83 @@
 <template>
   <div class="calendar-view">
-    <div class="day-of-week">
-      <div>일</div>
-      <div>월</div>
-      <div>화</div>
-      <div>수</div>
-      <div>목</div>
-      <div>금</div>
-      <div>토</div>
-    </div>
-    <div
-        v-if="viewType === 'month'"
-        class="date-grid">
-      <div v-for="(day, index) in days"
-           :key="index"
-           :style="{ gridColumn: column(index) }"
-           class="day"
-           @dragover.prevent
-           @dragenter.prevent
-           @drop.prevent="onDrop(day)"
-           @click.stop="selectDay(day)">
-        <div class="day-num"
-             :class="{ 'today': today(day) }">{{ `${day.date()}일` }}</div>
-        <div class="event-list">
-          <div v-for="(event, index) in eventsMap[day.format('YYYY-MM-DD')]"
-               :key="index"
-               :class="{ 'selected': event.selected }"
-               class="event"
-               draggable="true"
-               @dragstart="onDragStart(event)"
-               @click.stop="selectEvent(event)">
-            <span>{{ event.title }}</span>
-            <span>{{ formatDate(event.start.dateTime) }}</span>
+    <template v-if="viewType === 'month'">
+      <div class="day-of-week">
+        <div v-for="(day, index) in dayOfWeek" :key="index">
+          {{ day }}
+        </div>
+      </div>
+      <div class="date-grid">
+        <div v-for="(day, index) in days"
+             :key="index"
+             :style="{ gridColumn: column(index) }"
+             class="day"
+             @dragover.prevent
+             @dragenter.prevent
+             @drop.prevent="onDrop(day)"
+             @click.stop="selectDay(day)">
+          <div class="day-num"
+               :class="{ 'today': isToday(day) }">{{ `${day.date()}일` }}</div>
+          <div class="event-list">
+            <div v-for="(event, index) in eventsMap[day.format('YYYY-MM-DD')]"
+                 :key="index"
+                 :class="{ 'selected': event.selected }"
+                 class="event"
+                 draggable="true"
+                 @dragstart="onDragStart(event)"
+                 @click.stop="selectEvent(event)">
+              <span>{{ event.title }}</span>
+              <span>{{ formatDate(event.start.dateTime) }}</span>
+            </div>
           </div>
         </div>
       </div>
-    </div>
-    <div v-else>
-      주
-    </div>
+    </template>
+    <template v-else>
+      <table>
+        <thead>
+          <tr>
+            <th></th>
+            <th v-for="(day, index) in dayOfWeek" :key="index">
+              <span class="day">{{ day.format('DD (dd)') }}</span>
+            </th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr v-for="(hour, index) in hours"
+              :key="index">
+            <td class="hour"><span>{{ hour.format('LT') }}</span></td>
+            <td v-for="(day, index) in dayOfWeek"
+                :key="index"
+                class="hour"
+                @dragover.prevent
+                @dragenter.prevent
+                @drop.prevent="onDrop(day, hour)"
+                @click.stop="selectDay(day, hour)"
+                @click="selectHour(day, hour)">
+              <div class="event-list">
+                <div v-for="(event, index) in getEventsByMap(day, hour)"
+                     :key="index"
+                     :class="{ 'selected': event.selected }"
+                     class="event"
+                     draggable="true"
+                     @dragstart="onDragStart(event)"
+                     @click.stop="selectEvent(event)">
+                  <span>{{ event.title }}</span>
+                  <span>{{ formatDate(event.start.dateTime) }}</span>
+                </div>
+              </div>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </template>
   </div>
 </template>
 
 <script>
-import { dateFormat } from '@/date'
+// import { dateFormat } from '@/date'
 import moment from 'moment'
+import { viewType } from '@/constant/constant'
 
 export default {
   name: 'CalendarView',
@@ -57,7 +90,7 @@ export default {
       type: Object,
       default: null
     },
-    selectedDate: {
+    today: {
       type: Object,
       default: null
     },
@@ -73,8 +106,28 @@ export default {
   data () {
     return {
       days: [],
+      weeks: [],
       eventsMap: {},
       draggingEvent: null
+    }
+  },
+  computed: {
+    dayOfWeek () {
+      if (this.viewType === viewType.month) {
+        return moment.weekdays()
+      } else {
+        const today = this.currentDate.clone()
+        const fromDate = today.startOf('week').subtract(1, 'd')
+        const res = moment.weekdays().reduce((obj, cur) => {
+          const date = fromDate.add(1, 'd')
+          obj.push(date.clone())
+          return obj
+        }, [])
+        return res
+      }
+    },
+    hours () {
+      return Array(24).fill('').map((val, i) => moment(i, 'hh'))
     }
   },
   watch: {
@@ -96,14 +149,24 @@ export default {
     this.buildDays()
   },
   methods: {
+    // TODO: 성능개선
+    getEventsByMap (day, hour) {
+      const events = this.eventsMap[day.format('YYYY-MM-DD')]
+      let res = []
+      if (events) {
+        res = events.filter(event => moment(event.start.dateTime).hours() === hour.hours())
+      }
+
+      return res
+    },
     column (index) {
       // 첫번째 시작위치
       if (index === 0) {
         return this.days[0].day() + 1
       }
     },
-    today (day) {
-      return this.selectedDate && this.selectedDate.isSame(day, 'day')
+    isToday (day) {
+      return this.today.isSame(day)
     },
     buildDays () {
       const monthDate = this.currentDate.clone().startOf('month')
@@ -115,13 +178,25 @@ export default {
     selectEvent (event) {
       this.$emit('event-selected', event)
     },
-    selectDay (date) {
+    selectDay (date, hour = null) {
+      if (hour) {
+        date.hours(hour.hours())
+      }
       this.$emit('day-selected', date)
+    },
+    selectHour (day, hour) {
+      console.log(day, hour.hours())
+      // ?
     },
     onDragStart (event) {
       this.draggingEvent = event
     },
-    onDrop (newDate) {
+    onDrop (date, hour = null) {
+      let newDate = date
+      if (hour) {
+        // TODO: clone () ?
+        newDate = date.hours(hour.hours())
+      }
       const event = this.draggingEvent
       if (event) {
         const { start, end } = event
@@ -129,11 +204,11 @@ export default {
           ...event,
           start: {
             date: moment(start.date).date(newDate.date()).format('YYYY-MM-DD'),
-            dateTime: moment(start.dateTime).date(newDate.date()).format('YYYY-MM-DD HH:mm')
+            dateTime: moment(start.dateTime).date(newDate.date()).hour(newDate.hours()).format('YYYY-MM-DD HH:mm')
           },
           end: {
             date: moment(end.date).date(newDate.date()).format('YYYY-MM-DD'),
-            dateTime: moment(end.dateTime).date(newDate.date()).format('YYYY-MM-DD HH:mm')
+            dateTime: moment(end.dateTime).date(newDate.date()).hour(newDate.hours()).format('YYYY-MM-DD HH:mm')
           }
         }
         this.$emit('day-changed', event.id, payload)
@@ -141,7 +216,7 @@ export default {
       this.draggingEvent = null
     },
     formatDate (date) {
-      return moment(date).format(dateFormat.HHA)
+      return moment(date).format('LT')
     }
   }
 }
@@ -189,56 +264,145 @@ export default {
     background-color: transparent;
     color: var(--color-text);
     overflow: auto;
+    cursor: pointer;
 
     .day-num {
       display: flex;
       justify-content: flex-end;
       width: 100%;
       &.today {
-        background-color: var(--color-primary);
+        background-color: var(--color-accent);
         color: var(--color-text);
       }
     }
+  }
+  .event-list {
+    width: 100%;
+    text-align: left;
+    .event {
+      display: flex;
+      justify-content: space-between;
+      padding: 3px;
+      cursor: pointer;
+      span {
+        &:first-child {
+          &:before {
+            flex: none;
+            margin: 0 3px 0 3px;
+            content: '';
+            display: inline-block;
+            width: 10px;
+            height: 10px;
+            -moz-border-radius: 7.5px;
+            -webkit-border-radius: 7.5px;
+            border-radius: 7.5px;
+            background-color: var(--color-info);
+          }
+        }
+        &:last-child {
+          font-size: .9em;
+        }
+      }
+      &:hover,
+      &:focus {
+        outline: none;
+        background-color: var(--color-gray);
+        color: var(--color-text);
+      }
 
-    .event-list {
-      width: 100%;
-      text-align: left;
-      .event {
-        display: flex;
-        justify-content: space-between;
-        padding: 3px;
-        cursor: pointer;
-        span {
-          &:first-child {
-            &:before {
-              flex: none;
-              margin: 0 3px 0 3px;
-              content: '';
-              display: inline-block;
-              width: 10px;
-              height: 10px;
-              -moz-border-radius: 7.5px;
-              -webkit-border-radius: 7.5px;
-              border-radius: 7.5px;
-              background-color: var(--color-info);
+      &:active {
+        color: var(--color-secondary);
+      }
+      &.selected {
+        background-color: var(--color-primary);
+      }
+    }
+  }
+  table{
+    margin-top: 10px;
+    font-family:sans-serif;
+    width: 100%;
+    border-spacing: 0;
+    border-collapse: separate;
+    table-layout: fixed;
+    margin-bottom: 50px;
+
+    thead{
+      tr{
+        th{
+          background: var(--color-primary);
+          color: var(--color-text);
+          padding: 0.5em;
+          overflow: hidden;
+
+          &:first-child{
+            border-radius:3px 0 0 0;
+          }
+          &:last-child{
+            border-radius:0 3px  0 0;
+          }
+
+          .day{
+            font-size: 1.2em;
+            border-radius: 50%;
+            line-height: 1.8;
+
+            &.active{
+              background: var(--color-gray);
+              color: var(--color-primary);
             }
           }
-          &:last-child {
-           font-size: .9em;
+
+          .short{
+            display: none;
+          }
+
+          i{
+            vertical-align: middle;
+            font-size: 2em;
           }
         }
-        &:hover,
-        &:focus {
-          outline: none;
-          background-color: var(--color-gray);
-          color: var(--color-text);
-        }
+      }
+    }
+    tbody{
+      tr{
+        background: var(--color-gray);
 
-        &:active {
-          color: var(--color-secondary);
+        &:nth-child(odd){
+          background:var(--color-gray);
         }
-        &.selected {
-          background-color: var(--color-primary);
+        &:nth-child(4n+0){
+          td{
+            border-bottom:1px solid var(--color-primary);
+          }
+        }
+        td{
+          text-align: center;
+          vertical-align: middle;
+          border-left: 1px solid var(--color-primary);
+          border-bottom: 1px solid var(--color-primary);
+          position: relative;
+          height: 32px;
+          cursor: pointer;
+
+          &:last-child{
+            border-right:1px solid var(--color-primary);
+          }
+          &.hour{
+            font-size: 1.2em;
+            padding: 0;
+            color: var(--color-text);
+            background:#fff;
+            border-bottom:1px solid var(--color-primary);
+            border-collapse: separate;
+            min-width: 100px;
+            cursor: pointer;
+
+            span{
+              display: block;
+
+            }
+          }
         }
       }
     }

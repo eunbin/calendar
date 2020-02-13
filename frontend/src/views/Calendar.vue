@@ -8,8 +8,8 @@
       @next="onNext"></calendar-header>
     <calendar-view
       :view-type="viewType"
+      :today="today"
       :current-date="currentDate"
-      :selected-date="selectedDate"
       :events="events"
       @event-selected="onSelectEvent"
       @day-selected="onSelectDay"
@@ -36,8 +36,8 @@ export default {
     return {
       viewType: viewType.month,
       events: [],
+      today: null,
       currentDate: null,
-      selectedDate: null,
       selectedEvent: null,
       dialog: false,
       dialogModel: null
@@ -56,9 +56,8 @@ export default {
   },
   created () {
     this.resetDialogModel()
-    this.selectedDate = this.currentDate
-
-    this.currentDate = moment()
+    this.today = moment().hours(0).minutes(0).seconds(0).milliseconds(0)
+    this.currentDate = this.today.clone()
     this.getEvents()
   },
   methods: {
@@ -115,12 +114,16 @@ export default {
     },
     onPrev () {
       if (this.viewType === viewType.month) {
-        this.currentDate = this.currentDate.clone().add(-1, 'month')
+        this.currentDate = this.currentDate.clone().subtract(1, 'month')
+      } else {
+        this.currentDate = this.currentDate.clone().subtract(7, 'd')
       }
     },
     onNext () {
       if (this.viewType === viewType.month) {
         this.currentDate = this.currentDate.clone().add(1, 'month')
+      } else {
+        this.currentDate = this.currentDate.clone().add(7, 'd')
       }
     },
     async addEvent (newEvent) {
