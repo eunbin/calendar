@@ -1,10 +1,9 @@
 import axios from 'axios'
-import dotenv from 'dotenv'
-dotenv.config()
+const TIMEOUT_MILL = 5000
 
 const httpClient = axios.create({
   baseURL: process.env.VUE_APP_SERVER_URL,
-  timeout: 5000,
+  timeout: TIMEOUT_MILL,
   headers: {
     'Access-Control-Allow-Origin': '*',
     'Access-Control-Allow-Headers': 'x-access-token',

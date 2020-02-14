@@ -1,19 +1,21 @@
 import httpClient from '@/plugins/httpClient'
 
+const PATH = '/events'
+
 export default {
   getEvents () {
-    return httpClient.get('/events')
+    return httpClient.get(PATH)
   },
   addEvent (event) {
-    return httpClient.post('/events', { event })
+    return httpClient.post(PATH, { event })
   },
   updateEventById (id, event) {
-    return httpClient.put(`/events/${id}`, { event })
+    return httpClient.put(`${PATH}/${id}`, { event })
   },
   updateEventDateById (id, { start, end }) {
-    return httpClient.patch(`/events/${id}`, { event: { start, end } })
+    return httpClient.patch(`${PATH}/${id}`, { event: { start, end } })
   },
-  deleteEvent (id) {
-    return httpClient.delete(`/events/${id}`)
+  deleteEventById (id) {
+    return httpClient.delete(`${PATH}/${id}`)
   }
 }

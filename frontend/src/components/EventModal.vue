@@ -1,47 +1,77 @@
 <template>
-  <div class="modal"
-       :class="{ show: value }">
+  <div
+    class="modal"
+    :class="{ show: value }"
+  >
     <div class="modal__inner">
-      <button class="modal__close" @click="close"></button>
-      <h2>일정 {{ isAdd ? '등록' : '수정'}}</h2>
+      <button
+        class="modal__close"
+        @click="close"
+      />
+      <h2>일정 {{ isAdd ? '등록' : '수정' }}</h2>
       <div class="form">
         <div>
           <label for="title">일정 제목</label>
-          <input v-model="model.title" id="title" type="text">
+          <input
+            id="title"
+            v-model="model.title"
+            type="text"
+          >
         </div>
         <div>
           <label for="startDate">시작시간</label>
-          <date-pick v-model="model.start.dateTime"
-                     start-week-on-sunday
-                     pick-time
-                     :format="datePickerFormat"
-                     id="startDate"
-                     @input="onChangeStartDateTime"></date-pick>
+          <date-pick
+            id="startDate"
+            v-model="model.start.dateTime"
+            start-week-on-sunday
+            pick-time
+            :format="dateFormat.DATE_TIME"
+            @input="onChangeStartDateTime"
+          />
         </div>
         <div>
           <label for="endDate">종료시간</label>
-          <date-pick v-model="model.end.dateTime"
-                     start-week-on-sunday
-                     pick-time
-                     :format="datePickerFormat"
-                     id="endDate"
-                     @input="onChangeEndDateTime"></date-pick>
-        </div><div>
+          <date-pick
+            id="endDate"
+            v-model="model.end.dateTime"
+            start-week-on-sunday
+            pick-time
+            :format="dateFormat.DATE_TIME"
+            @input="onChangeEndDateTime"
+          />
+        </div>
       </div>
-      </div>
-      <p v-if="errors.length"
-         class="validation">
+      <div
+        v-if="errors.length"
+        class="validation"
+      >
         <b>아래 에러를 확인해주세요.</b>
         <ul>
-          <li v-for="(error, index) in errors"
-              :key="index">{{ error }}
+          <li
+            v-for="(error, index) in errors"
+            :key="index"
+          >
+            {{ error }}
           </li>
         </ul>
-      </p>
+      </div>
       <div class="modal__action">
-        <button @click="close">취소</button>
-        <button v-show="!isAdd" class="accent" @click="deleteEvent">삭제</button>
-        <button class="info" @click="submit">{{ isAdd ? '등록' : '저장'}}</button>
+        <button @click="close">
+          취소
+        </button>
+        <button
+          v-show="!isAdd"
+          class="accent"
+          @click="deleteEvent"
+        >
+          삭제
+        </button>
+        <button
+          class="info"
+          @click="submit"
+        >
+          {{ isAdd ? '등록' : '저장' }}
+        </button>
       </div>
     </div>
   </div>
@@ -50,9 +80,8 @@
 <script>
 import DatePick from 'vue-date-pick'
 import 'vue-date-pick/dist/vueDatePick.css'
-import moment from 'moment'
 import { cloneDeep } from 'lodash-es'
-// import { dateFormat } from '@/date'
+import moment from 'moment'
 
 export default {
   name: 'EventModal',
@@ -63,7 +92,8 @@ export default {
       default: false
     },
     event: {
-      type: Object
+      type: Object,
+      default: () => []
     }
   },
   data () {
@@ -75,9 +105,6 @@ export default {
   computed: {
     isAdd () {
       return !this.event.id
-    },
-    datePickerFormat () {
-      return 'YYYY-MM-DD HH:mm'
     }
   },
   watch: {
@@ -96,23 +123,36 @@ export default {
     this.removeEventListeners()
   },
   methods: {
+    addEventListeners () {
+      document.addEventListener('keydown', this.handleKeyDown)
+      document.addEventListener('click', this.handleClick)
+    },
+    removeEventListeners () {
+      document.addEventListener('keydown', this.handleKeyDown)
+      document.addEventListener('click', this.handleClick)
+    },
     onChangeStartDateTime (val) {
       const startDateTime = moment(val)
       const endDateTime = startDateTime.clone().add(1, 'hour')
-      this.model.start.date = startDateTime.format('YYYY-MM-DD')
-      this.model.end.date = endDateTime.format('YYYY-MM-DD')
-      this.model.end.dateTime = endDateTime.format('YYYY-MM-DD HH:mm')
+      this.model.start.date = startDateTime.format(this.dateFormat.DATE)
+      this.model.end.date = endDateTime.format(this.dateFormat.DATE)
+      this.model.end.dateTime = endDateTime.format(this.dateFormat.DATE_TIME)
     },
     onChangeEndDateTime (val) {
       const endDateTime = moment(val)
       const startDateTime = endDateTime.clone().subtract(1, 'hour')
-      this.model.end.date = endDateTime.format('YYYY-MM-DD')
-      this.model.start.date = startDateTime.format('YYYY-MM-DD')
-      this.model.start.dateTime = startDateTime.format('YYYY-MM-DD HH:mm')
+      this.model.end.date = endDateTime.format(this.dateFormat.DATE)
+      this.model.start.date = startDateTime.format(this.dateFormat.DATE)
+      this.model.start.dateTime = startDateTime.format(this.dateFormat.DATE_TIME)
     },
     submit () {
-      if (this.isValidForm()) {
-        this.$emit('submit', this.model, this.isAdd)
+      if (!this.isValidForm()) {
+        return
+      }
+      if (this.isAdd) {
+        this.$emit('add', this.model)
+      } else {
+        this.$emit('update', this.model)
       }
     },
     deleteEvent () {
@@ -148,14 +188,6 @@ export default {
       if (!e.target.closest('.modal__inner')) {
         this.close()
       }
-    },
-    addEventListeners () {
-      document.addEventListener('keydown', this.handleKeyDown)
-      document.addEventListener('click', this.handleClick)
-    },
-    removeEventListeners () {
-      document.addEventListener('keydown', this.handleKeyDown)
-      document.addEventListener('click', this.handleClick)
     }
   }
 }

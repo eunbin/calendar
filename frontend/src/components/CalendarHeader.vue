@@ -1,22 +1,29 @@
 <template>
-  <div class="month-indicator">
+  <div class="calendar__header">
     <div class="nav">
-      <button @click="prevMonth">
+      <button @click="prev">
         이전
       </button>
       <span>{{ title }}</span>
-      <button @click="nextMonth">
+      <button @click="next">
         다음
       </button>
     </div>
     <div class="btn-group">
-      <button @click="setViewType('month')">월</button>
-      <button @click="setViewType('week')">주</button>
+      <button
+        v-for="(obj, index) in viewTypeList"
+        :key="index"
+        @click="setViewType(obj.value)"
+      >
+        {{ obj.label }}
+      </button>
     </div>
   </div>
 </template>
 
 <script>
+import { viewTypes } from '@/types/calendar'
+
 export default {
   name: 'CalendarHeader',
   props: {
@@ -31,13 +38,21 @@ export default {
   },
   data () {
     return {
-      month: '12',
       type: this.viewType
     }
   },
   computed: {
     title () {
-      return `${this.currentDate.format('YYYY')}년 ${this.currentDate.format('M')}월`
+      return this.currentDate.format(this.dateFormat.YEAR_AND_MONTH)
+    },
+    viewTypeList () {
+      return [{
+        value: viewTypes.MONTH,
+        label: '월'
+      }, {
+        value: viewTypes.WEEK,
+        label: '주'
+      }]
     }
   },
   methods: {
@@ -45,18 +60,18 @@ export default {
       this.type = newType
       this.$emit('change', this.type)
     },
-    prevMonth () {
+    prev () {
       this.$emit('prev')
     },
-    nextMonth () {
+    next () {
       this.$emit('next')
     }
   }
 }
 </script>
 
-<style lang="scss">
-  .month-indicator {
+<style lang="scss" scoped>
+  .calendar__header {
     height: 50px;
     display: flex;
     justify-content: space-between;

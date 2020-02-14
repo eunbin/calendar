@@ -1,30 +1,41 @@
 <template>
-  <div class="calendar-view">
-    <template v-if="viewType === 'month'">
+  <div class="calendar__view">
+    <template v-if="isMonthView">
       <div class="day-of-week">
-        <div v-for="(day, index) in dayOfWeek" :key="index">
+        <div
+          v-for="(day, index) in dayOfWeek"
+          :key="index"
+        >
           {{ day }}
         </div>
       </div>
       <div class="date-grid">
-        <div v-for="(day, index) in days"
-             :key="index"
-             :style="{ gridColumn: column(index) }"
-             class="day"
-             @dragover.prevent
-             @dragenter.prevent
-             @drop.prevent="onDrop(day)"
-             @click.stop="selectDay(day)">
-          <div class="day-num"
-               :class="{ 'today': isToday(day) }">{{ `${day.date()}일` }}</div>
+        <div
+          v-for="(day, i) in days"
+          :key="i"
+          :style="{ gridColumn: column(i) }"
+          class="day"
+          @dragover.prevent
+          @dragenter.prevent
+          @drop.prevent="onDrop(day)"
+          @click.stop="selectDay(day)"
+        >
+          <div
+            class="day-num"
+            :class="{ 'today': isToday(day) }"
+          >
+            {{ `${day.date()}일` }}
+          </div>
           <div class="event-list">
-            <div v-for="(event, index) in eventsMap[day.format('YYYY-MM-DD')]"
-                 :key="index"
-                 :class="{ 'selected': event.selected }"
-                 class="event"
-                 draggable="true"
-                 @dragstart="onDragStart(event)"
-                 @click.stop="selectEvent(event)">
+            <div
+              v-for="(event, j) in eventsMap[day.format(dateFormat.DATE)]"
+              :key="j"
+              :class="{ 'selected': event.selected }"
+              class="event"
+              draggable="true"
+              @dragstart="onDragStart(event)"
+              @click.stop="selectEvent(event)"
+            >
               <span>{{ event.title }}</span>
               <span>{{ formatDate(event.start.dateTime) }}</span>
             </div>
@@ -36,32 +47,42 @@
       <table>
         <thead>
           <tr>
-            <th></th>
-            <th v-for="(day, index) in dayOfWeek" :key="index">
-              <span class="day">{{ day.format('DD (dd)') }}</span>
+            <th />
+            <th
+              v-for="(day, index) in dayOfWeek"
+              :key="index"
+            >
+              <span class="day">{{ day.format(dateFormat.DATE_AND_DAY) }}</span>
             </th>
           </tr>
         </thead>
         <tbody>
-          <tr v-for="(hour, index) in hours"
-              :key="index">
-            <td class="hour"><span>{{ hour.format('LT') }}</span></td>
-            <td v-for="(day, index) in dayOfWeek"
-                :key="index"
-                class="hour"
-                @dragover.prevent
-                @dragenter.prevent
-                @drop.prevent="onDrop(day, hour)"
-                @click.stop="selectDay(day, hour)"
-                @click="selectHour(day, hour)">
+          <tr
+            v-for="(hour, index) in hours"
+            :key="index"
+          >
+            <td class="hour">
+              <span>{{ hour.format(dateFormat.HOUR_AND_MIN) }}</span>
+            </td>
+            <td
+              v-for="(day, i) in dayOfWeek"
+              :key="i"
+              class="hour"
+              @dragover.prevent
+              @dragenter.prevent
+              @drop.prevent="onDrop(day, hour)"
+              @click.stop="selectHour(day, hour)"
+            >
               <div class="event-list">
-                <div v-for="(event, index) in getEventsByMap(day, hour)"
-                     :key="index"
-                     :class="{ 'selected': event.selected }"
-                     class="event"
-                     draggable="true"
-                     @dragstart="onDragStart(event)"
-                     @click.stop="selectEvent(event)">
+                <div
+                  v-for="(event, j) in getEventsByMap(day, hour)"
+                  :key="j"
+                  :class="{ 'selected': event.selected }"
+                  class="event"
+                  draggable="true"
+                  @dragstart="onDragStart(event)"
+                  @click.stop="selectEvent(event)"
+                >
                   <span>{{ event.title }}</span>
                   <span>{{ formatDate(event.start.dateTime) }}</span>
                 </div>
@@ -75,9 +96,8 @@
 </template>
 
 <script>
-// import { dateFormat } from '@/date'
+import { viewTypes } from '@/types/calendar'
 import moment from 'moment'
-import { viewType } from '@/constant/constant'
 
 export default {
   name: 'CalendarView',
@@ -112,51 +132,43 @@ export default {
     }
   },
   computed: {
+    isMonthView () {
+      return this.viewType === viewTypes.MONTH
+    },
     dayOfWeek () {
-      if (this.viewType === viewType.month) {
+      if (this.viewType === viewTypes.MONTH) {
         return moment.weekdays()
       } else {
-        const today = this.currentDate.clone()
-        const fromDate = today.startOf('week').subtract(1, 'd')
-        const res = moment.weekdays().reduce((obj, cur) => {
-          const date = fromDate.add(1, 'd')
-          obj.push(date.clone())
-          return obj
-        }, [])
-        return res
+        const startOfWeek = this.currentDate.clone().startOf('week').subtract(1, 'd')
+        return moment.weekdays().map(() => startOfWeek.add(1, 'd').clone())
       }
     },
     hours () {
-      return Array(24).fill('').map((val, i) => moment(i, 'hh'))
+      return Array(24).fill('').map((_, i) => moment(i, 'hh'))
     }
   },
   watch: {
     events () {
       this.eventsMap = this.events.reduce((res, event) => {
-        if (res[event.start.date]) {
-          res[event.start.date].push(event)
-        } else {
-          res[event.start.date] = [event]
-        }
+        res[event.start.date] = res[event.start.date] ? [...res[event.start.date], event] : [event]
         return res
       }, {})
     },
-    currentDate () {
-      this.buildDays()
+    currentDate: {
+      immediate: true,
+      handler () {
+        this.buildDays()
+      }
     }
-  },
-  mounted () {
-    this.buildDays()
   },
   methods: {
     // TODO: 성능개선
     getEventsByMap (day, hour) {
-      const events = this.eventsMap[day.format('YYYY-MM-DD')]
+      const events = this.eventsMap[day.format(this.dateFormat.DATE)]
       let res = []
       if (events) {
         res = events.filter(event => moment(event.start.dateTime).hours() === hour.hours())
       }
-
       return res
     },
     column (index) {
@@ -169,61 +181,52 @@ export default {
       return this.today.isSame(day)
     },
     buildDays () {
-      const monthDate = this.currentDate.clone().startOf('month')
-      this.days = [...Array(monthDate.daysInMonth())].map((_, i) => {
-        return monthDate.clone().add(i, 'day')
-      })
+      const monthDate = this.currentDate.clone().startOf(viewTypes.MONTH)
+      this.days = [...Array(monthDate.daysInMonth())].map((_, i) => monthDate.clone().add(i, 'day'))
     },
     // TODO: event delegation
     selectEvent (event) {
       this.$emit('event-selected', event)
     },
-    selectDay (date, hour = null) {
-      if (hour) {
-        date.hours(hour.hours())
-      }
+    selectDay (date) {
       this.$emit('day-selected', date)
     },
-    selectHour (day, hour) {
-      console.log(day, hour.hours())
-      // ?
+    selectHour (date, hour) {
+      date.hours(hour.hours())
+      this.$emit('hour-selected', date)
     },
     onDragStart (event) {
       this.draggingEvent = event
     },
     onDrop (date, hour = null) {
-      let newDate = date
-      if (hour) {
-        // TODO: clone () ?
-        newDate = date.hours(hour.hours())
-      }
       const event = this.draggingEvent
       if (event) {
         const { start, end } = event
+        const newDate = hour ? date.clone().hours(hour.hours()) : date
         const payload = {
           ...event,
           start: {
-            date: moment(start.date).date(newDate.date()).format('YYYY-MM-DD'),
-            dateTime: moment(start.dateTime).date(newDate.date()).hour(newDate.hours()).format('YYYY-MM-DD HH:mm')
+            date: moment(start.date).date(newDate.date()).format(this.dateFormat.DATE),
+            dateTime: moment(start.dateTime).date(newDate.date()).hour(newDate.hours()).format(this.dateFormat.DATE_TIME)
           },
           end: {
-            date: moment(end.date).date(newDate.date()).format('YYYY-MM-DD'),
-            dateTime: moment(end.dateTime).date(newDate.date()).hour(newDate.hours()).format('YYYY-MM-DD HH:mm')
+            date: moment(end.date).date(newDate.date()).format(this.dateFormat.DATE),
+            dateTime: moment(end.dateTime).date(newDate.date()).hour(newDate.hours() + 1).format(this.dateFormat.DATE_TIME)
           }
         }
-        this.$emit('day-changed', event.id, payload)
+        this.$emit('event-moved', payload)
       }
       this.draggingEvent = null
     },
     formatDate (date) {
-      return moment(date).format('LT')
+      return moment(date).format(this.dateFormat.TIME)
     }
   }
 }
 </script>
 
 <style lang="scss" scoped>
-  .calendar-view {
+  .calendar__view {
     width: 100%;
     height: calc(100% - 50px);
   }
