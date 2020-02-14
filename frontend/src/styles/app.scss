@@ -5,16 +5,19 @@
   --color-info: #66cccc;
   --color-text: #000;
   --color-gray: #ededed;
+  --color-dark-gray: #333;
 }
 
+$font-size: 14px;
 input, button:focus {
   outline: none;
 }
 
 html {
-  font-size: 14px
+  font-size: $font-size;
 }
 
+// date-picker
 .vdpComponent {
   width: 100%;
   input[type="text"] {
@@ -25,6 +28,6 @@ html {
     border: 1px solid #ccc;
     border-radius: 4px;
     box-sizing: border-box;
-    font-size: 14px;
+    font-size: $font-size;
   }
 }

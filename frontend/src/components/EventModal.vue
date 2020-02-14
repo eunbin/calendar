@@ -1,5 +1,6 @@
 <template>
   <div
+    role="dialog"
     class="modal"
     :class="{ show: value }"
   >
@@ -19,7 +20,7 @@
           >
         </div>
         <div>
-          <label for="startDate">시작시간</label>
+          <label for="startDate">시작 시간</label>
           <date-pick
             id="startDate"
             v-model="model.start.dateTime"
@@ -30,7 +31,7 @@
           />
         </div>
         <div>
-          <label for="endDate">종료시간</label>
+          <label for="endDate">종료 시간</label>
           <date-pick
             id="endDate"
             v-model="model.end.dateTime"
@@ -60,7 +61,7 @@
           취소
         </button>
         <button
-          v-show="!isAdd"
+          v-if="!isAdd"
           class="accent"
           @click="deleteEvent"
         >

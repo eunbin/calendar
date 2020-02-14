@@ -1,24 +1,25 @@
 <template>
-  <div class="calendar__header">
+  <header>
     <div class="nav">
       <button @click="prev">
         이전
       </button>
-      <span>{{ title }}</span>
+      <h1>{{ title }}</h1>
       <button @click="next">
         다음
       </button>
     </div>
-    <div class="btn-group">
+    <div class="view-type">
       <button
         v-for="(obj, index) in viewTypeList"
         :key="index"
+        :class="{ active: obj.value === type }"
         @click="setViewType(obj.value)"
       >
         {{ obj.label }}
       </button>
     </div>
-  </div>
+  </header>
 </template>
 
 <script>
@@ -71,40 +72,45 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-  .calendar__header {
-    height: 50px;
+$header-height: 50px;
+
+@mixin btn--normal {
+  background-color: var(--color-gray);
+  width: 100px;
+  height: 100%;
+  border: none;
+  cursor: pointer;
+}
+
+header {
+  height: $header-height;
+  display: flex;
+  justify-content: center;
+  color: var(--color-primary);
+
+  .nav {
     display: flex;
-    justify-content: space-between;
-    color: var(--color-primary);
-    text-align: center;
-    font-weight: 500;
-
-    .nav {
-      display: flex;
-      & button {
-        width: 100px;
-        cursor: pointer;
-      }
-      & span {
-        font-size: 2em;
-        margin: 0 0.3em 0 0.3em;
-      }
+    align-items: center;
+    & button {
+      @include btn--normal;
     }
-
-    .btn-group button {
-      background-color: var(--color-primary);
-      border: 1px solid var(--color-primary);
-      width: 100px;
-      height: 100%;
-      cursor: pointer;
-    }
-
-    .btn-group button:not(:last-child) {
-      border-right: none;
-    }
-
-    .btn-group button:hover {
-      background-color: var(--color-primary);
+    & h1 {
+      font-size: 2em;
+      margin: 0 0.3em 0 0.3em;
     }
   }
+
+  .view-type {
+    margin-left: 50px;
+    button {
+      @include btn--normal;
+      &:not(:last-child) {
+        border-right: 1px solid #fff;
+      }
+      &:hover, &.active {
+        background-color: var(--color-secondary);
+      }
+    }
+  }
+}
 </style>

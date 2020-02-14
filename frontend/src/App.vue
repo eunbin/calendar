@@ -17,6 +17,7 @@
       @day-selected="openDialog"
       @event-moved="handleMoveEvent"
     />
+    <!--    <month-view />-->
     <event-modal
       v-model="dialog"
       :event="dialogModel"
@@ -39,9 +40,9 @@ import moment from 'moment'
 export default {
   name: 'Calendar',
   components: {
-    EventModal,
+    CalendarHeader,
     CalendarView,
-    CalendarHeader
+    EventModal
   },
   data () {
     return {
@@ -180,12 +181,19 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-  .calendar {
-    position: absolute;
-    top: 0;
-    right: 0;
-    bottom: 0;
-    left: 0;
-    padding: 1em;
+.calendar {
+  position: absolute;
+  bottom: 0;
+  top: 0;
+  left: 0;
+  right: 0;
+  display: flex;
+  flex-direction: column;
+  header {
+    flex: none;
   }
+  .calendar__view {
+    flex: auto;
+  }
+}
 </style>

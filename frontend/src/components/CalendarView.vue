@@ -1,15 +1,19 @@
 <template>
   <div class="calendar__view">
-    <template v-if="isMonthView">
-      <div class="day-of-week">
-        <div
+    <div
+      v-if="isMonthView"
+      class="month-view"
+    >
+      <div class="days-of-week">
+        <span
           v-for="(day, index) in dayOfWeek"
           :key="index"
+          class="day column"
         >
           {{ day }}
-        </div>
+        </span>
       </div>
-      <div class="date-grid">
+      <div class="days-of-month">
         <div
           v-for="(day, i) in days"
           :key="i"
@@ -24,10 +28,10 @@
             class="day-num"
             :class="{ 'today': isToday(day) }"
           >
-            {{ `${day.date()}일` }}
+            {{ day.date() }}
           </div>
-          <div class="event-list">
-            <div
+          <dl class="event-list">
+            <dt
               v-for="(event, j) in eventsMap[day.format(dateFormat.DATE)]"
               :key="j"
               :class="{ 'selected': event.selected }"
@@ -38,60 +42,59 @@
             >
               <span>{{ event.title }}</span>
               <span>{{ formatDate(event.start.dateTime) }}</span>
-            </div>
-          </div>
+            </dt>
+          </dl>
         </div>
       </div>
-    </template>
-    <template v-else>
-      <table>
-        <thead>
-          <tr>
-            <th />
-            <th
-              v-for="(day, index) in dayOfWeek"
-              :key="index"
-            >
-              <span class="day">{{ day.format(dateFormat.DATE_AND_DAY) }}</span>
-            </th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr
-            v-for="(hour, index) in hours"
+    </div>
+    <table
+      v-else
+      class="week-view">
+      <thead>
+        <tr>
+          <th />
+          <th
+            v-for="(day, index) in dayOfWeek"
             :key="index"
           >
-            <td class="hour">
-              <span>{{ hour.format(dateFormat.HOUR_AND_MIN) }}</span>
-            </td>
-            <td
-              v-for="(day, i) in dayOfWeek"
-              :key="i"
-              class="hour"
-              @dragover.prevent
-              @dragenter.prevent
-              @drop.prevent="onDrop(day, hour)"
-              @click.stop="selectHour(day, hour)"
-            >
-              <div class="event-list">
-                <div
-                  v-for="(event, j) in getEventsByMap(day, hour)"
-                  :key="j"
-                  :class="{ 'selected': event.selected }"
-                  class="event"
-                  draggable="true"
-                  @dragstart="onDragStart(event)"
-                  @click.stop="selectEvent(event)"
-                >
-                  <span>{{ event.title }}</span>
-                  <span>{{ formatDate(event.start.dateTime) }}</span>
-                </div>
+            <span class="day">{{ day.format(dateFormat.DATE_AND_DAY) }}</span>
+          </th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr
+          v-for="(hour, index) in hours"
+          :key="index"
+        >
+          <td class="hour">
+            <span>{{ hour.format(dateFormat.HOUR_AND_MIN) }}</span>
+          </td>
+          <td
+            v-for="(day, i) in dayOfWeek"
+            :key="i"
+            class="hour"
+            @dragover.prevent
+            @dragenter.prevent
+            @drop.prevent="onDrop(day, hour)"
+            @click.stop="selectHour(day, hour)"
+          >
+            <div class="event-list">
+              <div
+                v-for="(event, j) in getEventsByMap(day, hour)"
+                :key="j"
+                :class="{ 'selected': event.selected }"
+                class="event"
+                draggable="true"
+                @dragstart="onDragStart(event)"
+                @click.stop="selectEvent(event)"
+              >
+                <span>{{ event.title }}</span>
               </div>
-            </td>
-          </tr>
-        </tbody>
-      </table>
-    </template>
+            </div>
+          </td>
+        </tr>
+      </tbody>
+    </table>
   </div>
 </template>
 
@@ -226,62 +229,65 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-  .calendar__view {
-    width: 100%;
-    height: calc(100% - 50px);
-  }
+  $day-width: 100% / 7;
 
-  .day-of-week,
-  .date-grid {
-    display: grid;
-    grid-template-columns: repeat(7, 1fr);
-  }
-  .date-grid {
+  .month-view {
     height: 100%;
-  }
-
-  .day-of-week {
-    margin-top: 1.25em;
-  }
-
-  .day-of-week > * {
-    font-size: 1.2em;
-    color: var(--color-text);
-    font-weight: 500;
-    letter-spacing: 0.1em;
-    text-align: center;
-  }
-
-  .date-grid {
-    margin-top: 0.5em;
-    grid-template-rows: repeat(5, 1fr);
-  }
-
-  .date-grid .day {
-    position: relative;
     display: flex;
     flex-direction: column;
-    align-items: flex-start;
-    justify-content: flex-start;
-    border: 1px solid #000;
-    background-color: transparent;
-    color: var(--color-text);
-    overflow: auto;
-    cursor: pointer;
-
-    .day-num {
-      display: flex;
-      justify-content: flex-end;
-      width: 100%;
-      &.today {
-        background-color: var(--color-accent);
+    .days-of-week,
+    .days-of-month {
+      display: grid;
+      grid-template-columns: repeat(7, 1fr);
+    }
+    .days-of-month {
+      height: 100%;
+    }
+    .days-of-week {
+      height: 44px;
+      line-height: 44px;
+      background-color: var(--color-primary);
+      & > * {
+        font-size: 1.2em;
         color: var(--color-text);
+        font-weight: 500;
+        letter-spacing: 0.1em;
+        text-align: center;
+      }
+    }
+
+    .days-of-month {
+      grid-template-rows: repeat(5, 1fr);
+      & .day {
+        position: relative;
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+        justify-content: flex-start;
+        border: 1px solid var(--color-dark-gray);
+        background-color: transparent;
+        color: var(--color-text);
+        .day-num {
+          height: 25px;
+          width: 25px;
+          border-radius: 50%;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          background-color: transparent;
+          &.today {
+            background-color: var(--color-accent);
+            color: #fff;
+          }
+        }
       }
     }
   }
+
   .event-list {
     width: 100%;
     text-align: left;
+    overflow: auto;
     .event {
       display: flex;
       justify-content: space-between;
@@ -306,13 +312,11 @@ export default {
           font-size: .9em;
         }
       }
-      &:hover,
-      &:focus {
+      &:hover, &:focus {
         outline: none;
         background-color: var(--color-gray);
         color: var(--color-text);
       }
-
       &:active {
         color: var(--color-secondary);
       }
@@ -321,94 +325,83 @@ export default {
       }
     }
   }
-  table{
-    margin-top: 10px;
-    font-family:sans-serif;
+
+  table.week-view {
     width: 100%;
+    height: 100%;
     border-spacing: 0;
     border-collapse: separate;
     table-layout: fixed;
-    margin-bottom: 50px;
-
-    thead{
-      tr{
-        th{
+    thead {
+      tr {
+        th {
           background: var(--color-primary);
           color: var(--color-text);
           padding: 0.5em;
           overflow: hidden;
-
-          &:first-child{
-            border-radius:3px 0 0 0;
+          &:first-child {
+            width: 50px;
+            border-radius: 3px 0 0 0;
           }
-          &:last-child{
-            border-radius:0 3px  0 0;
+          &:last-child {
+            border-radius: 0 3px 0 0;
           }
-
-          .day{
+          .day {
             font-size: 1.2em;
             border-radius: 50%;
             line-height: 1.8;
-
-            &.active{
+            &.active {
               background: var(--color-gray);
               color: var(--color-primary);
             }
           }
-
-          .short{
+          .short {
             display: none;
           }
-
-          i{
+          i {
             vertical-align: middle;
             font-size: 2em;
           }
         }
       }
     }
-    tbody{
-      tr{
-        background: var(--color-gray);
 
-        &:nth-child(odd){
-          background:var(--color-gray);
+    tbody {
+      tr {
+        background: var(--color-gray);
+        height: calc(100%/24);
+        &:nth-child(odd) {
+          background: var(--color-gray);
         }
-        &:nth-child(4n+0){
-          td{
-            border-bottom:1px solid var(--color-primary);
+        &:nth-child(4n+0) {
+          td {
+            border-bottom: 1px solid var(--color-primary);
           }
         }
-        td{
+        td {
           text-align: center;
           vertical-align: middle;
-          border-left: 1px solid var(--color-primary);
-          border-bottom: 1px solid var(--color-primary);
+          border-left: 1px solid var(--color-dark-gray);
+          border-bottom: 1px solid var(--color-dark-gray);
           position: relative;
           height: 32px;
-          cursor: pointer;
-
-          &:last-child{
-            border-right:1px solid var(--color-primary);
+          &:last-child {
+            border-right: 1px solid var(--color-dark-gray);
           }
-          &.hour{
+          &.hour {
             font-size: 1.2em;
             padding: 0;
             color: var(--color-text);
-            background:#fff;
-            border-bottom:1px solid var(--color-primary);
+            background: #fff;
+            border-bottom: 1px solid var(--color-dark-gray);
             border-collapse: separate;
             min-width: 100px;
-            cursor: pointer;
-
-            span{
+            span {
               display: block;
-
             }
           }
         }
       }
     }
   }
-
 </style>
