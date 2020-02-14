@@ -1,5 +1,11 @@
 import moment from "moment";
 
+const dateFormat = Object.freeze({
+  DATE: 'YYYY-MM-DD',
+  DATE_TIME: 'YYYY-MM-DD HH:mm',
+  HOUR_AND_MIN: 'HH:mm'
+})
+
 const uuid = () => {
   return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
     const r = Math.random() * 16 | 0, v = c === 'x' ? r : (r & 0x3 | 0x8);
@@ -21,66 +27,66 @@ let events = [
     id: uuid(),
     title: 'event1',
     start: {
-      date: moment({ year: 2020, month: 1, day: 7, hour: 23}).format('YYYY-MM-DD'),
-      dateTime: moment({ year: 2020, month: 1, day: 7, hour: 23}).format('YYYY-MM-DD HH:mm')
+      date: moment({ year: 2020, month: 1, day: 7, hour: 23}).format(dateFormat.DATE),
+      dateTime: moment({ year: 2020, month: 1, day: 7, hour: 23}).format(dateFormat.DATE_TIME)
     },
     end: {
-      date: moment({ year: 2020, month: 1, day: 7, hour: 24}).format('YYYY-MM-DD'),
-      dateTime: moment({ year: 2020, month: 1, day: 7, hour: 24}).format('YYYY-MM-DD HH:mm')
+      date: moment({ year: 2020, month: 1, day: 7, hour: 24}).format(dateFormat.DATE),
+      dateTime: moment({ year: 2020, month: 1, day: 7, hour: 24}).format(dateFormat.DATE_TIME)
     },
-    createdAt: moment().format('YYYY-MM-DD HH:mm')
+    createdAt: moment().format(dateFormat.DATE_TIME)
   },
   {
     id: uuid(),
     title: 'event2',
     start: {
-      date: moment({ year: 2020, month: 1, day: 5, hour: 14}).format('YYYY-MM-DD'),
-      dateTime: moment({ year: 2020, month: 1, day: 5, hour: 14}).format('YYYY-MM-DD HH:mm')
+      date: moment({ year: 2020, month: 1, day: 5, hour: 14}).format(dateFormat.DATE),
+      dateTime: moment({ year: 2020, month: 1, day: 5, hour: 14}).format(dateFormat.DATE_TIME)
     },
     end: {
-      date: moment({ year: 2020, month: 1, day: 5, hour: 15}).format('YYYY-MM-DD'),
-      dateTime: moment({ year: 2020, month: 1, day: 5, hour: 15}).format('YYYY-MM-DD HH:mm')
+      date: moment({ year: 2020, month: 1, day: 5, hour: 15}).format(dateFormat.DATE),
+      dateTime: moment({ year: 2020, month: 1, day: 5, hour: 15}).format(dateFormat.DATE_TIME)
     },
-    createdAt: moment().format('YYYY-MM-DD HH:mm')
+    createdAt: moment().format(dateFormat.DATE_TIME)
   },
   {
     id: uuid(),
     title: 'event3',
     start: {
-      date: moment({ year: 2020, month: 1, day: 4, hour: 14}).format('YYYY-MM-DD'),
-      dateTime: moment({ year: 2020, month: 1, day: 4, hour: 14}).format('YYYY-MM-DD HH:mm')
+      date: moment({ year: 2020, month: 1, day: 4, hour: 14}).format(dateFormat.DATE),
+      dateTime: moment({ year: 2020, month: 1, day: 4, hour: 14}).format(dateFormat.DATE_TIME)
     },
     end: {
-      date:moment({ year: 2020, month: 1, day: 4, hour: 15}).format('YYYY-MM-DD'),
-      dateTime: moment({ year: 2020, month: 1, day: 4, hour: 15}).format('YYYY-MM-DD HH:mm')
+      date:moment({ year: 2020, month: 1, day: 4, hour: 15}).format(dateFormat.DATE),
+      dateTime: moment({ year: 2020, month: 1, day: 4, hour: 15}).format(dateFormat.DATE_TIME)
     },
-    createdAt: moment().format('YYYY-MM-DD HH:mm')
+    createdAt: moment().format(dateFormat.DATE_TIME)
   },
   {
     id: uuid(),
     title: 'event4',
     start: {
-      date: moment({ year: 2020, month: 1, day: 5, hour: 18}).format('YYYY-MM-DD'),
-      dateTime: moment({ year: 2020, month: 1, day: 5, hour: 18}).format('YYYY-MM-DD HH:mm'),
+      date: moment({ year: 2020, month: 1, day: 5, hour: 18}).format(dateFormat.DATE),
+      dateTime: moment({ year: 2020, month: 1, day: 5, hour: 18}).format(dateFormat.DATE_TIME),
     },
     end: {
-      date: moment({ year: 2020, month: 1, day: 5, hour: 19}).format('YYYY-MM-DD'),
-      dateTime: moment({ year: 2020, month: 1, day: 5, hour: 19}).format('YYYY-MM-DD HH:mm'),
+      date: moment({ year: 2020, month: 1, day: 5, hour: 19}).format(dateFormat.DATE),
+      dateTime: moment({ year: 2020, month: 1, day: 5, hour: 19}).format(dateFormat.DATE_TIME),
     },
-    createdAt: moment().format('YYYY-MM-DD HH:mm')
+    createdAt: moment().format(dateFormat.DATE_TIME)
   },
   {
     id: uuid(),
     title: 'event5',
     start: {
-      date: moment({ year: 2020, month: 2, day: 5, hour: 12}).format('YYYY-MM-DD'),
-      dateTime: moment({ year: 2020, month: 2, day: 5, hour: 12}).format('YYYY-MM-DD HH:mm'),
+      date: moment({ year: 2020, month: 2, day: 5, hour: 12}).format(dateFormat.DATE),
+      dateTime: moment({ year: 2020, month: 2, day: 5, hour: 12}).format(dateFormat.DATE_TIME),
     },
     end: {
-      date: moment({ year: 2020, month: 2, day: 5, hour: 13}).format('YYYY-MM-DD'),
-      dateTime: moment({ year: 2020, month: 2, day: 5, hour: 13}).format('YYYY-MM-DD HH:mm')
+      date: moment({ year: 2020, month: 2, day: 5, hour: 13}).format(dateFormat.DATE),
+      dateTime: moment({ year: 2020, month: 2, day: 5, hour: 13}).format(dateFormat.DATE_TIME)
     },
-    createdAt: moment().format('YYYY-MM-DD HH:mm')
+    createdAt: moment().format(dateFormat.DATE_TIME)
   }
 ];
 
