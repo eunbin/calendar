@@ -17,7 +17,6 @@
         <div
           v-for="(day, i) in days"
           :key="i"
-          :style="{ gridColumn: column(i) }"
           class="day"
           @dragover.prevent
           @dragenter.prevent
@@ -26,7 +25,9 @@
         >
           <div
             class="day-num"
-            :class="{ 'today': isToday(day) }"
+            :class="{
+              'today': isToday(day),
+              'dim': !isSameMonth(day)}"
           >
             {{ day.date() }}
           </div>
@@ -49,7 +50,8 @@
     </div>
     <table
       v-else
-      class="week-view">
+      class="week-view"
+    >
       <thead>
         <tr>
           <th />
@@ -174,18 +176,39 @@ export default {
       }
       return res
     },
-    column (index) {
-      // 첫번째 시작위치
-      if (index === 0) {
-        return this.days[0].day() + 1
-      }
-    },
     isToday (day) {
       return this.today.isSame(day)
     },
+    isSameMonth (date) {
+      return this.currentDate.month() === date.month()
+    },
     buildDays () {
+      const previous = this.daysOfPrevMonth()
+
       const monthDate = this.currentDate.clone().startOf(viewTypes.MONTH)
-      this.days = [...Array(monthDate.daysInMonth())].map((_, i) => monthDate.clone().add(i, 'day'))
+      const daysOfMonth = [...Array(monthDate.daysInMonth())].map((_, i) => monthDate.clone().add(i, 'day'))
+
+      const next = this.daysOfNextMonth()
+
+      this.days = [...previous, ...daysOfMonth, ...next]
+    },
+    daysOfPrevMonth () {
+      const startOfMonth = this.currentDate.clone().startOf('month')
+      const day = startOfMonth.day()
+      const arr = []
+      for (let i = day; i > 0; i--) {
+        arr.push(startOfMonth.clone().subtract(i, 'd'))
+      }
+      return arr
+    },
+    daysOfNextMonth () {
+      const endOfMonth = this.currentDate.clone().endOf('month')
+      const day = endOfMonth.day()
+      const arr = []
+      for (let i = 1; i < 7 - day; i++) {
+        arr.push(endOfMonth.clone().add(i, 'd'))
+      }
+      return arr
     },
     // TODO: event delegation
     selectEvent (event) {
@@ -257,14 +280,17 @@ export default {
     }
 
     .days-of-month {
-      grid-template-rows: repeat(5, 1fr);
+      grid-auto-rows: 1fr;
+      border-top: 1px solid var(--color-dark-gray);
+      border-left: 1px solid var(--color-dark-gray);
       & .day {
         position: relative;
         display: flex;
         flex-direction: column;
         align-items: flex-start;
         justify-content: flex-start;
-        border: 1px solid var(--color-dark-gray);
+        border-bottom: 1px solid var(--color-dark-gray);
+        border-right: 1px solid var(--color-dark-gray);
         background-color: transparent;
         color: var(--color-text);
         .day-num {
@@ -275,9 +301,13 @@ export default {
           align-items: center;
           justify-content: center;
           background-color: transparent;
+          font-weight: bold;
           &.today {
             background-color: var(--color-accent);
             color: #fff;
+          }
+          &.dim {
+            color: #ccc;
           }
         }
       }
