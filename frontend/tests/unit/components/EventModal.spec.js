@@ -2,30 +2,7 @@ import { mount } from '@vue/test-utils'
 import EventModal from '@/components/EventModal'
 import dateMixin from '@/mixins/date'
 import { modalTitles } from '@/types/calendar'
-
-const newEvent = {
-  title: '새로운 이벤트',
-  start: {
-    date: '2020-02-18',
-    dateTime: '2020-02-18 10:00'
-  },
-  end: {
-    date: '2020-02-18',
-    dateTime: '2020-02-18 10:00'
-  }
-}
-const eventHasId = {
-  id: 'event_id_dummy',
-  title: '새로운 이벤트',
-  start: {
-    date: '2020-02-18',
-    dateTime: '2020-02-18 10:00'
-  },
-  end: {
-    date: '2020-02-18',
-    dateTime: '2020-02-18 10:00'
-  }
-}
+import { newEvent, eventHasId } from '../test-data'
 
 const createOption = (event) => {
   return {
