@@ -141,7 +141,7 @@ class Event {
     └── Calendar.vue		// 컨테이너 컴포넌트
 ````
 ### 6. REST API  
-* 모든 Endpoint는 /api 로 작한다.
+* 모든 Endpoint는 /api 로 시작한다.
 * URI의 자원명은 일정을 나타내는 events 를 사용한다.  
 * GET, POST, PUT, PATCH, DELET 메서드를 적절하게 사용한다.  
 * 적절한 상태코드와 에러메시지를 반환한다.
