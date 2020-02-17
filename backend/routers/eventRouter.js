@@ -10,11 +10,11 @@ import {
 
 const eventRouter = express.Router();
 
-eventRouter.get('/', getEventList);
-eventRouter.get('/:id', getEventById);
-eventRouter.post('/', addEvent);
-eventRouter.put('/:id', updateEventById);
-eventRouter.patch('/:id', updateEventDateById);
-eventRouter.delete('/:id', deleteEventById);
+eventRouter.get('/events', getEventList);
+eventRouter.get('/events/:id', getEventById);
+eventRouter.post('/events/', addEvent);
+eventRouter.put('/events/:id', updateEventById);
+eventRouter.patch('/events/:id', updateEventDateById);
+eventRouter.delete('/events/:id', deleteEventById);
 
 export default eventRouter;
