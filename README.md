@@ -7,18 +7,21 @@
 * Frontend App 빌드  
 ```  
 $ cd frontend  
-$ npm run build 	 // ../backend/public 으로 배포되도록 설정
+$ npm run build 	 // ../backend/public 으로 배포되도록 설정되어 있음 
 ```  
 *  서버 실행  
 ```  
 $ cd backend  
-$ npm run start 	// 5000 번 포트 사용 	// npm run install && babel-node init.js 실행
+$ npm run start 	// npm run install && babel-node init.js 실행
 ```  
 * 브라우저에서 접속  
   * http://localhost:5000
 
 * 정상 동작 확인 방법
   * 정상적으로 서버에서 데이터를 받아온 경우 2월 캘린더에 테스트 데이터가 조회된다.  
+  
+* 테스트 실행
+  * npm run test:unit
   
 ### 2. 개발환경  
 * Frontend  
@@ -41,11 +44,11 @@ $ npm run start 	// 5000 번 포트 사용 	// npm run install && babel-node ini
 ```  
 ├── public           // static files  
 ├── src  
-│   ├── components   // 화면을 구성하는 컴포넌트들  
+│   ├── components   // 화면을 구성하는 컴포넌트
 │   ├── mixins       // 컴포넌트에서 사용할 mixin  
-│   ├── plugins      // Axios 플러그인 로딩, 설정  
+│   ├── plugins      // Axios 플러그인 설정  
 │   ├── router       // router 설정  
-│   ├── service      // API 호출 함수 작성  
+│   ├── service      // 실제 API를 호출하는 funtion   
 │   ├── store        // Events 상태 관리 및 service 호출  
 │   ├── styles       // Global style 관리  
 │   ├── types        // 주요 타입 관리  
