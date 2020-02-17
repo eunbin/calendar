@@ -43,7 +43,10 @@
           />
         </div>
       </div>
-      <div class="validation">
+      <div
+        v-if="errors.length"
+        class="validation"
+      >
         <b>아래 에러를 확인해주세요.</b>
         <ul>
           <li
