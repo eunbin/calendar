@@ -7,7 +7,7 @@
 * Frontend App 빌드  
 ```  
 $ cd frontend  
-$ npm run build 	 // ../backend/public 으로 배포되도록 설정되어 있음 
+$ npm run deploy 	 // npm run install && npm run build
 ```  
 *  서버 실행  
 ```  
@@ -62,6 +62,7 @@ $ npm run start 	// npm run install && babel-node init.js 실행
 ├── controllers      // 라우팅을 처리하는 컨트롤러 함수 작성  
 ├── entity           // 데이터 Entity  
 ├── model            // Data Repository 역할  
+├── public           // Front App 이 배포되면서 생성되는 
 ├── routers          // API Endpoint 라우팅  
 └── util             // util 함수    
 ```  
