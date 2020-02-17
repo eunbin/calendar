@@ -13,7 +13,7 @@
       <button
         v-for="(obj, index) in viewTypeList"
         :key="index"
-        :class="{ active: obj.value === type }"
+        :class="{ active: isSelected(obj.value) }"
         @click="setViewType(obj.value)"
       >
         {{ obj.label }}
@@ -66,6 +66,9 @@ export default {
     },
     next () {
       this.$emit('next')
+    },
+    isSelected (obj) {
+      return obj.value === this.type
     }
   }
 }
