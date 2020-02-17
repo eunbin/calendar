@@ -7,6 +7,7 @@ import dateMixin from './mixins/date.vue'
 import './plugins/httpClient'
 import 'moment/locale/ko'
 import router from './router'
+import 'vue-date-pick/dist/vueDatePick.css'
 
 Vue.config.productionTip = false
 

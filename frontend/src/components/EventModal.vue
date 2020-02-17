@@ -9,7 +9,7 @@
         class="modal__close"
         @click="close"
       />
-      <h2>일정 {{ isAdd ? '등록' : '수정' }}</h2>
+      <h2>{{ modalTitle }}</h2>
       <div class="form">
         <div>
           <label for="title">일정 제목</label>
@@ -17,6 +17,7 @@
             id="title"
             v-model="model.title"
             type="text"
+            maxlength="30"
           >
         </div>
         <div>
@@ -71,7 +72,7 @@
           class="info"
           @click="submit"
         >
-          {{ isAdd ? '등록' : '저장' }}
+          {{ submitButtonLabel }}
         </button>
       </div>
     </div>
@@ -80,9 +81,8 @@
 
 <script>
 import DatePick from 'vue-date-pick'
-import 'vue-date-pick/dist/vueDatePick.css'
-import { cloneDeep } from 'lodash-es'
 import moment from 'moment'
+import { modalTitles } from '@/types/calendar'
 
 export default {
   name: 'EventModal',
@@ -94,7 +94,7 @@ export default {
     },
     event: {
       type: Object,
-      default: () => []
+      default: () => {}
     }
   },
   data () {
@@ -104,15 +104,21 @@ export default {
     }
   },
   computed: {
+    modalTitle () {
+      return this.isAdd ? modalTitles.ADD_EVENT : modalTitles.UPDATE_EVENT
+    },
     isAdd () {
-      return !this.event.id
+      return !this.model.id
+    },
+    submitButtonLabel () {
+      return this.isAdd ? '등록' : '저장'
     }
   },
   watch: {
     event: {
       immediate: true,
       handler () {
-        this.model = cloneDeep(this.event)
+        this.model = { ...this.event }
         this.errors = []
       }
     }

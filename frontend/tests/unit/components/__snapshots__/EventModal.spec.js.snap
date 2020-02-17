@@ -1,0 +1,209 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`EventModal snapshot check with model 1`] = `
+<div
+  class="modal show"
+  role="dialog"
+>
+  <div
+    class="modal__inner"
+  >
+    <button
+      class="modal__close"
+    />
+     
+    <h2>
+      일정 등록
+    </h2>
+     
+    <div
+      class="form"
+    >
+      <div>
+        <label
+          for="title"
+        >
+          일정 제목
+        </label>
+         
+        <input
+          id="title"
+          maxlength="30"
+          type="text"
+        />
+      </div>
+       
+      <div>
+        <label
+          for="startDate"
+        >
+          시작 시간
+        </label>
+         
+        <div
+          class="vdpComponent vdpWithInput"
+          id="startDate"
+        >
+          <input
+            type="text"
+          />
+           
+          <button
+            class="vdpClearInput"
+            type="button"
+          />
+           
+          <!---->
+        </div>
+      </div>
+       
+      <div>
+        <label
+          for="endDate"
+        >
+          종료 시간
+        </label>
+         
+        <div
+          class="vdpComponent vdpWithInput"
+          id="endDate"
+        >
+          <input
+            type="text"
+          />
+           
+          <button
+            class="vdpClearInput"
+            type="button"
+          />
+           
+          <!---->
+        </div>
+      </div>
+    </div>
+     
+    <!---->
+     
+    <div
+      class="modal__action"
+    >
+      <button>
+        
+        취소
+      
+      </button>
+       
+      <!---->
+       
+      <button
+        class="info"
+      >
+        
+        등록
+      
+      </button>
+    </div>
+  </div>
+</div>
+`;
+
+exports[`EventModal 동일한 컨텐츠가 렌더링되어야 한다. 1`] = `
+<div
+  class="modal show"
+  role="dialog"
+>
+  <div
+    class="modal__inner"
+  >
+    <button
+      class="modal__close"
+    />
+     
+    <h2>
+      일정 등록
+    </h2>
+     
+    <div
+      class="form"
+    >
+      <div>
+        <label
+          for="title"
+        >
+          일정 제목
+        </label>
+         
+        <input
+          id="title"
+          maxlength="30"
+          type="text"
+        />
+      </div>
+       
+      <div>
+        <label
+          for="startDate"
+        >
+          시작 시간
+        </label>
+         
+        <div
+          class="vdpComponent vdpWithInput"
+          id="startDate"
+        >
+          <input
+            type="text"
+          />
+           
+          <!---->
+           
+          <!---->
+        </div>
+      </div>
+       
+      <div>
+        <label
+          for="endDate"
+        >
+          종료 시간
+        </label>
+         
+        <div
+          class="vdpComponent vdpWithInput"
+          id="endDate"
+        >
+          <input
+            type="text"
+          />
+           
+          <!---->
+           
+          <!---->
+        </div>
+      </div>
+    </div>
+     
+    <!---->
+     
+    <div
+      class="modal__action"
+    >
+      <button>
+        
+        취소
+      
+      </button>
+       
+      <!---->
+       
+      <button
+        class="info"
+      >
+        
+        등록
+      
+      </button>
+    </div>
+  </div>
+</div>
+`;

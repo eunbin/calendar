@@ -32,7 +32,7 @@
 import CalendarHeader from '@/components/CalendarHeader'
 import CalendarView from '@/components/CalendarView'
 import EventModal from '@/components/EventModal'
-import { viewTypes } from '@/types/calendar'
+import { viewTypes, DEFAULT_VIEW_TYPE } from '@/types/calendar'
 import { mapState, mapActions } from 'vuex'
 import moment from 'moment'
 
@@ -45,7 +45,7 @@ export default {
   },
   data () {
     return {
-      viewType: viewTypes.MONTH,
+      viewType: DEFAULT_VIEW_TYPE,
       today: null,
       currentDate: null,
       selectedEvent: null,

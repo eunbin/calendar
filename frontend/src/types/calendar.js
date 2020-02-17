@@ -6,6 +6,15 @@ const viewTypes = Object.freeze({
   WEEK
 })
 
+const DEFAULT_VIEW_TYPE = viewTypes.MONTH
+
+const modalTitles = {
+  ADD_EVENT: '일정 등록',
+  UPDATE_EVENT: '일정 수정'
+}
+
 export {
-  viewTypes
+  viewTypes,
+  DEFAULT_VIEW_TYPE,
+  modalTitles
 }

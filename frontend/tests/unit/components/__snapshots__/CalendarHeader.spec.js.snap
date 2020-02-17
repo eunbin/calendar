@@ -1,0 +1,134 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`CalendarHeader should render content correctly 1`] = `
+<header>
+  <div
+    class="nav"
+  >
+    <button>
+      
+      이전
+    
+    </button>
+     
+    <h1>
+      2020 년 2 월
+    </h1>
+     
+    <button>
+      
+      다음
+    
+    </button>
+  </div>
+   
+  <div
+    class="view-type"
+  >
+    <button
+      class=""
+    >
+      <span
+        class="title"
+      >
+        월
+      </span>
+    </button>
+    <button
+      class=""
+    >
+      <span
+        class="title"
+      >
+        주
+      </span>
+    </button>
+  </div>
+</header>
+`;
+
+exports[`CalendarHeader 동일한 컨텐츠가 렌더링되어야 한다. 1`] = `
+<header>
+  <div
+    class="nav"
+  >
+    <button>
+      
+      이전
+    
+    </button>
+     
+    <h1>
+      2020 년 2 월
+    </h1>
+     
+    <button>
+      
+      다음
+    
+    </button>
+  </div>
+   
+  <div
+    class="view-type"
+  >
+    <button
+      class=""
+    >
+      
+      월
+    
+    </button>
+    <button
+      class=""
+    >
+      
+      주
+    
+    </button>
+  </div>
+</header>
+`;
+
+exports[`CalendarHeader 항상 동일한 컨텐츠가 렌더링되어야 한다. 1`] = `
+<header>
+  <div
+    class="nav"
+  >
+    <button>
+      
+      이전
+    
+    </button>
+     
+    <h1>
+      2020 년 2 월
+    </h1>
+     
+    <button>
+      
+      다음
+    
+    </button>
+  </div>
+   
+  <div
+    class="view-type"
+  >
+    <button
+      class=""
+    >
+      
+      월
+    
+    </button>
+    <button
+      class=""
+    >
+      
+      주
+    
+    </button>
+  </div>
+</header>
+`;

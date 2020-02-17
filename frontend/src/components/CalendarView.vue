@@ -170,11 +170,10 @@ export default {
     // TODO: 성능개선
     getEventsByMap (day, hour) {
       const events = this.eventsMap[day.format(this.dateFormat.DATE)]
-      let res = []
       if (events) {
-        res = events.filter(event => moment(event.start.dateTime).hours() === hour.hours())
+        return events.filter(event => moment(event.start.dateTime).hours() === hour.hours())
       }
-      return res
+      return []
     },
     isToday (day) {
       return this.today.isSame(day)
@@ -196,7 +195,8 @@ export default {
       const startOfMonth = this.currentDate.clone().startOf('month')
       const day = startOfMonth.day()
       const arr = []
-      for (let i = day; i > 0; i--) {
+      const SUNDAY_NUM = 0
+      for (let i = day; i > SUNDAY_NUM; i--) {
         arr.push(startOfMonth.clone().subtract(i, 'd'))
       }
       return arr
@@ -205,7 +205,8 @@ export default {
       const endOfMonth = this.currentDate.clone().endOf('month')
       const day = endOfMonth.day()
       const arr = []
-      for (let i = 1; i < 7 - day; i++) {
+      const MAX_DAY = 7
+      for (let i = 1; i < MAX_DAY - day; i++) {
         arr.push(endOfMonth.clone().add(i, 'd'))
       }
       return arr
@@ -228,16 +229,16 @@ export default {
       const event = this.draggingEvent
       if (event) {
         const { start, end } = event
-        const newDate = hour ? date.clone().hours(hour.hours()) : date
+        const newDate = hour ? date.clone().hours(hour.hours()) : date.clone().hours(moment(start.dateTime).hours())
         const payload = {
           ...event,
           start: {
-            date: moment(start.date).date(newDate.date()).format(this.dateFormat.DATE),
-            dateTime: moment(start.dateTime).date(newDate.date()).hour(newDate.hours()).format(this.dateFormat.DATE_TIME)
+            date: moment(start.date).month(newDate.month()).date(newDate.date()).format(this.dateFormat.DATE),
+            dateTime: moment(start.dateTime).month(newDate.month()).date(newDate.date()).hour(newDate.hours()).format(this.dateFormat.DATE_TIME)
           },
           end: {
-            date: moment(end.date).date(newDate.date()).format(this.dateFormat.DATE),
-            dateTime: moment(end.dateTime).date(newDate.date()).hour(newDate.hours() + 1).format(this.dateFormat.DATE_TIME)
+            date: moment(end.date).month(newDate.month()).date(newDate.date()).format(this.dateFormat.DATE),
+            dateTime: moment(end.dateTime).month(newDate.month()).date(newDate.date()).hour(newDate.hours() + 1).format(this.dateFormat.DATE_TIME)
           }
         }
         this.$emit('event-moved', payload)
@@ -262,6 +263,7 @@ export default {
     .days-of-month {
       display: grid;
       grid-template-columns: repeat(7, 1fr);
+      grid-template-rows: repeat(auto-fit, minmax(50px, 1fr));
     }
     .days-of-month {
       height: 100%;
@@ -280,26 +282,27 @@ export default {
     }
 
     .days-of-month {
-      grid-auto-rows: 1fr;
       border-top: 1px solid var(--color-dark-gray);
       border-left: 1px solid var(--color-dark-gray);
       & .day {
         position: relative;
         display: flex;
         flex-direction: column;
-        align-items: flex-start;
+        align-items: flex-end;
         justify-content: flex-start;
+        overflow-x: hidden;
         border-bottom: 1px solid var(--color-dark-gray);
         border-right: 1px solid var(--color-dark-gray);
         background-color: transparent;
         color: var(--color-text);
+
         .day-num {
           height: 25px;
           width: 25px;
           border-radius: 50%;
-          display: flex;
-          align-items: center;
-          justify-content: center;
+          display: block;
+          text-align: center;
+          line-height: 25px;
           background-color: transparent;
           font-weight: bold;
           &.today {
