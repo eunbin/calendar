@@ -75,8 +75,8 @@ class Event {
   constructor (obj) {  
     this.id = uuid();  
     this.title = obj.title;  
-    this.start = obj.start;  
-    this.end = obj.end;  
+    this.start = new Date(obj.start);  
+    this.end = new Date(obj.end);  
     this.createdAt = moment().format(dateFormat.DATE_TIME);  
   }  
 }  
