@@ -4,8 +4,6 @@ exports[`CalendarView.vue snapshot check 1`] = `
 <div
   class="calendar__view"
 >
-  <weekly-stub
-    eventsmap="[object Object]"
-  />
+  <weekly-stub />
 </div>
 `;
