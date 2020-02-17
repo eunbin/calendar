@@ -155,8 +155,8 @@ class Event {
   * vuex store 를 사용하는 경우 mock 코드가 많아져서 정리가 필요하다고 느낌  
 * 레이아웃  
   * Monthly -> Grid  
-  * 각 칸의 높이가 inner element 개수에 상관없이 동일하게 유지하도록 개선  
-  * 브라우저 창의 크기에 상관없이 full calendar 로 동작하도록 개선  
+    * 각 칸의 높이가 inner element 개수에 상관없이 동일하게 유지하도록 개선  
+    * 브라우저 창의 크기에 상관없이 full calendar 로 동작하도록 개선  
   * Weekly -> Table  
 * DB 연동  
   * In-memory DB 인 Redis 연동해보기
