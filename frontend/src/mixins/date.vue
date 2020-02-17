@@ -1,5 +1,5 @@
 <script>
-import { dateFormat } from '@/date'
+import { dateFormat } from '@/types/date'
 
 export default {
   data () {
