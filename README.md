@@ -34,7 +34,7 @@
 ├── entity           // 데이터 Entity  
 ├── model            // Data Repository 역할  
 ├── routers          // API Endpoint 라우팅  
-└── util             // util 함수    
+└── util             // util 함수    
 ```  
   
 #### 3. 빌드 및 접속 방법  
@@ -65,8 +65,8 @@ class Date {
 }  
 ```  
 * date와 datetime 으로 나누어 저장한다. 
- * date Format * date: ‘YYYY-MM-DD’ 
- * datetime Format: ‘YYYY-MM-DD hh:mm’ 
+  * date Format * date: ‘YYYY-MM-DD’ 
+  * datetime Format: ‘YYYY-MM-DD hh:mm’ 
 *  **date 는 동일한 날짜끼리 Map 으로 분류하고, 이벤트가 속할 캘린더의 칸을 정할 때 사용한다.**
 
 * 이벤트 모델  
@@ -87,8 +87,8 @@ class Event {
 * 디폴트 보기 모드는 월별 보기, 오늘 날짜 기준으로 표시한다.  
 * 화면은 크게 헤더와 캘린더 뷰 영역으로 나뉜다.  
   * 상단 헤더   
-	* 이전/다음 페이지 이동 버튼, 타이틀, 월/주 전환 버튼으로 구성된다.  
-  * 하단 켈린더 뷰  
+    * 이전/다음 페이지 이동 버튼, 타이틀, 월/주 전환 버튼으로 구성된다.  
+  * 하단 캘린더 뷰  
     * 현재 날짜 기준으로 캘린더를 그린다.   
  * 월별 보기 모드
     * 해당 날짜에 여러 일정이 저장된 경우, 시간 순서대로 표시한다.  
@@ -116,32 +116,32 @@ class Event {
 * URI의 자원명은 일정을 나타내는 events 를 사용한다.  
 * GET, POST, PUT, PATCH, DELET 메서드를 적절하게 사용한다.  
 * 적절한 상태코드와 에러메시지를 반환한다.
-  1. 일정 조회  
-	  1. GET /events  
-  2. 스케쥴 추가  
-	  3. POST /events  
-	  4. Body  
-		  5. 일정 제목  
-		  6. 시작 날짜  
-		  7. 종료 날짜  
-  3. 스케쥴 수정  
-	  4. PUT /events/:id  
-	  5. Body  
-	  4. 일정 제목  
-	  5. 시작 날짜  
-	  6. 종료 날짜  
-  4. 스케쥴 날짜 수정  
-	  8. PATCH /events/:id  
-	  9. Body  
-		  5. 시작 날짜  
-		  6. 종료 날짜  
-  5. 스케쥴 삭제  
-	  6. DELETE /events/:id  
+1. 일정 조회  
+    * GET /events  
+2. 일정 추가  
+    * POST /events  
+    * Body  
+      * 일정 제목  
+      * 시작 날짜  
+      * 종료 날짜  
+3. 일정 수정  
+    * PUT /events/:id  
+    * Body  
+      * 일정 제목  
+      * 시작 날짜  
+      * 종료 날짜  
+4. 일정 날짜 수정  
+    * PATCH /events/:id  
+    * Body  
+      * 시작 날짜  
+      * 종료 날짜  
+5. 일정 삭제  
+    * DELETE /events/:id  
   
   
 ### Wrap-up  
 * UI 요소  
-    * alert 로 되어있는 팝업 처리 부분을 Toast 컴포넌트 등을 사용하도록 개선  
+  * alert 로 되어있는 팝업 처리 부분을 Toast 컴포넌트 등을 사용하도록 개선  
 * 상태관리  
   * 현재 서버에서 받아오는 Events 를 상태로 관리하고 있음  
   * CRUD 요청을 actions 을 dispatch 해서 서버로 요청하도록 구현되어 있음  
