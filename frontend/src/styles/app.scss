@@ -17,6 +17,50 @@ html {
   font-size: $font-size;
 }
 
+// used in montly & weekly
+.event-list {
+  width: 100%;
+  text-align: left;
+  overflow: auto;
+  margin: 0;
+  .event {
+    display: flex;
+    justify-content: space-between;
+    padding: 3px;
+    cursor: pointer;
+    span {
+      &:first-child {
+        &:before {
+          flex: none;
+          margin: 0 3px 0 3px;
+          content: '';
+          display: inline-block;
+          width: 10px;
+          height: 10px;
+          -moz-border-radius: 7.5px;
+          -webkit-border-radius: 7.5px;
+          border-radius: 7.5px;
+          background-color: var(--color-info);
+        }
+      }
+      &:last-child {
+        font-size: .9em;
+      }
+    }
+    &:hover, &:focus {
+      outline: none;
+      background-color: var(--color-gray);
+      color: var(--color-text);
+    }
+    &:active {
+      color: var(--color-secondary);
+    }
+    &.selected {
+      background-color: var(--color-primary);
+    }
+  }
+}
+
 // date-picker
 .vdpComponent {
   width: 100%;
