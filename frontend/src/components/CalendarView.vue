@@ -24,6 +24,7 @@
 import Monthly from '@/components/view/Monthly'
 import Weekly from '@/components/view/Weekly'
 import { viewTypes } from '@/types/calendar'
+import moment from 'moment'
 
 export default {
   name: 'CalendarView',
@@ -56,11 +57,12 @@ export default {
       this.$emit('event-selected', event)
     },
     selectDay (date) {
-      this.$emit('day-selected', date)
+      const combined = date.hours(moment().hours())
+      this.$emit('day-selected', combined)
     },
     selectHour (date, hour) {
-      date.hours(hour.hours())
-      this.$emit('hour-selected', date)
+      const combined = date.hours(hour.hours())
+      this.$emit('hour-selected', combined)
     },
     onMoveEvent (payload) {
       this.$emit('event-moved', payload)
