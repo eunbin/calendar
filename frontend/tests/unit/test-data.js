@@ -21,3 +21,5 @@ export const eventHasId = {
     dateTime: '2020-02-18 10:00'
   }
 }
+
+export const currentDate = '2020-02-18 10:00'

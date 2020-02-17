@@ -132,3 +132,89 @@ exports[`CalendarHeader 항상 동일한 컨텐츠가 렌더링되어야 한다.
   </div>
 </header>
 `;
+
+exports[`CalendarHeader.vue 항상 동일한 컨텐츠가 렌더링되어야 한다. 1`] = `
+<header>
+  <div
+    class="nav"
+  >
+    <button>
+      
+      이전
+    
+    </button>
+     
+    <h1>
+      2020 년 2 월
+    </h1>
+     
+    <button>
+      
+      다음
+    
+    </button>
+  </div>
+   
+  <div
+    class="view-type"
+  >
+    <button
+      class=""
+    >
+      
+      월
+    
+    </button>
+    <button
+      class=""
+    >
+      
+      주
+    
+    </button>
+  </div>
+</header>
+`;
+
+exports[`항상 동일한 컨텐츠가 렌더링되어야 한다. 1`] = `
+<header>
+  <div
+    class="nav"
+  >
+    <button>
+      
+      이전
+    
+    </button>
+     
+    <h1>
+      2020 년 2 월
+    </h1>
+     
+    <button>
+      
+      다음
+    
+    </button>
+  </div>
+   
+  <div
+    class="view-type"
+  >
+    <button
+      class=""
+    >
+      
+      월
+    
+    </button>
+    <button
+      class=""
+    >
+      
+      주
+    
+    </button>
+  </div>
+</header>
+`;

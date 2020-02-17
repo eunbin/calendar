@@ -1,8 +1,9 @@
-import { mount } from '@vue/test-utils'
+import { mount, shallowMount } from '@vue/test-utils'
 import EventModal from '@/components/EventModal'
 import dateMixin from '@/mixins/date'
 import { modalTitles } from '@/types/calendar'
 import { newEvent, eventHasId } from '../test-data'
+import Vue from 'vue'
 
 const createOption = (event) => {
   return {
@@ -38,7 +39,7 @@ describe('EventModal.vue', () => {
     expect(wrapper.vm.modalTitle).toMatch(modalTitles.UPDATE_EVENT)
   })
 
-  it('일정 추가인 경우 수정 버튼은 렌더링되지 않는다.', () => {
+  it('일정 추가인 경우 삭제 버튼은 렌더링되지 않는다.', () => {
     const option = createOption(newEvent)
 
     const wrapper = mount(EventModal, option)
@@ -47,12 +48,25 @@ describe('EventModal.vue', () => {
     expect(saveButton.exists()).toBe(false)
   })
 
-  it('일정 수정인 경우 수정 버튼이 렌더링된다.', () => {
+  it('일정 수정인 경우 삭제 버튼이 렌더링된다.', () => {
     const option = createOption(eventHasId)
 
     const wrapper = mount(EventModal, option)
     const saveButton = wrapper.find('.accent')
 
     expect(saveButton.exists()).toBe(true)
+  })
+
+  it('Validation 에러가 존재하는 경우 에러 메시지가 보여진다.', async () => {
+    const wrapper = shallowMount(EventModal, createOption(newEvent))
+
+    wrapper.setData({ errors: [] })
+    await Vue.nextTick()
+    expect(wrapper.findAll('li').length).toBe(0)
+
+    wrapper.setData({ errors: [1, 2, 3] })
+    await Vue.nextTick()
+    const eventWrapper = wrapper.findAll('li')
+    expect(eventWrapper.length).toBe(3)
   })
 })

@@ -18,7 +18,7 @@ const createOption = () => {
 }
 
 describe('CalendarHeader.vue', () => {
-  test('항상 동일한 컨텐츠가 렌더링되어야 한다.', () => {
+  it('항상 동일한 컨텐츠가 렌더링되어야 한다.', () => {
     const wrapper = mount(CalendarHeader, createOption())
     expect(wrapper.vm.$el).toMatchSnapshot()
   })

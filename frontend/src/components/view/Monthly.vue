@@ -29,7 +29,7 @@
         </div>
         <dl class="event-list">
           <dt
-            v-for="(event, j) in eventsMap[day.format(dateFormat.DATE)]"
+            v-for="(event, j) in getEventsMap(day)"
             :key="j"
             :class="{ 'selected': event.selected }"
             class="event"
@@ -122,6 +122,9 @@ export default {
     },
     formatDate (date) {
       return moment(date).format(this.dateFormat.TIME)
+    },
+    getEventsMap (day) {
+      return this.eventsMap[day.format(this.dateFormat.DATE)]
     },
     onDrop (date, hour) {
       const event = this.draggingEvent
