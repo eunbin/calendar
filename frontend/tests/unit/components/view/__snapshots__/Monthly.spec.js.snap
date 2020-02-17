@@ -1,0 +1,592 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Monthly.vue snapshot check 1`] = `
+<div
+  class="month-view"
+  eventsmap="[object Object]"
+>
+  <div
+    class="days-of-week"
+  >
+    <span
+      class="day column"
+    >
+      
+      Sunday
+    
+    </span>
+    <span
+      class="day column"
+    >
+      
+      Monday
+    
+    </span>
+    <span
+      class="day column"
+    >
+      
+      Tuesday
+    
+    </span>
+    <span
+      class="day column"
+    >
+      
+      Wednesday
+    
+    </span>
+    <span
+      class="day column"
+    >
+      
+      Thursday
+    
+    </span>
+    <span
+      class="day column"
+    >
+      
+      Friday
+    
+    </span>
+    <span
+      class="day column"
+    >
+      
+      Saturday
+    
+    </span>
+  </div>
+   
+  <div
+    class="days-of-month"
+  >
+    <div
+      class="day"
+    >
+      <div
+        class="day-num dim"
+      >
+        
+        26
+      
+      </div>
+       
+      <dl
+        class="event-list"
+      />
+    </div>
+    <div
+      class="day"
+    >
+      <div
+        class="day-num dim"
+      >
+        
+        27
+      
+      </div>
+       
+      <dl
+        class="event-list"
+      />
+    </div>
+    <div
+      class="day"
+    >
+      <div
+        class="day-num dim"
+      >
+        
+        28
+      
+      </div>
+       
+      <dl
+        class="event-list"
+      />
+    </div>
+    <div
+      class="day"
+    >
+      <div
+        class="day-num dim"
+      >
+        
+        29
+      
+      </div>
+       
+      <dl
+        class="event-list"
+      />
+    </div>
+    <div
+      class="day"
+    >
+      <div
+        class="day-num dim"
+      >
+        
+        30
+      
+      </div>
+       
+      <dl
+        class="event-list"
+      />
+    </div>
+    <div
+      class="day"
+    >
+      <div
+        class="day-num dim"
+      >
+        
+        31
+      
+      </div>
+       
+      <dl
+        class="event-list"
+      />
+    </div>
+    <div
+      class="day"
+    >
+      <div
+        class="day-num"
+      >
+        
+        1
+      
+      </div>
+       
+      <dl
+        class="event-list"
+      />
+    </div>
+    <div
+      class="day"
+    >
+      <div
+        class="day-num"
+      >
+        
+        2
+      
+      </div>
+       
+      <dl
+        class="event-list"
+      />
+    </div>
+    <div
+      class="day"
+    >
+      <div
+        class="day-num"
+      >
+        
+        3
+      
+      </div>
+       
+      <dl
+        class="event-list"
+      />
+    </div>
+    <div
+      class="day"
+    >
+      <div
+        class="day-num"
+      >
+        
+        4
+      
+      </div>
+       
+      <dl
+        class="event-list"
+      />
+    </div>
+    <div
+      class="day"
+    >
+      <div
+        class="day-num"
+      >
+        
+        5
+      
+      </div>
+       
+      <dl
+        class="event-list"
+      />
+    </div>
+    <div
+      class="day"
+    >
+      <div
+        class="day-num"
+      >
+        
+        6
+      
+      </div>
+       
+      <dl
+        class="event-list"
+      />
+    </div>
+    <div
+      class="day"
+    >
+      <div
+        class="day-num"
+      >
+        
+        7
+      
+      </div>
+       
+      <dl
+        class="event-list"
+      />
+    </div>
+    <div
+      class="day"
+    >
+      <div
+        class="day-num"
+      >
+        
+        8
+      
+      </div>
+       
+      <dl
+        class="event-list"
+      />
+    </div>
+    <div
+      class="day"
+    >
+      <div
+        class="day-num"
+      >
+        
+        9
+      
+      </div>
+       
+      <dl
+        class="event-list"
+      />
+    </div>
+    <div
+      class="day"
+    >
+      <div
+        class="day-num"
+      >
+        
+        10
+      
+      </div>
+       
+      <dl
+        class="event-list"
+      />
+    </div>
+    <div
+      class="day"
+    >
+      <div
+        class="day-num"
+      >
+        
+        11
+      
+      </div>
+       
+      <dl
+        class="event-list"
+      />
+    </div>
+    <div
+      class="day"
+    >
+      <div
+        class="day-num"
+      >
+        
+        12
+      
+      </div>
+       
+      <dl
+        class="event-list"
+      />
+    </div>
+    <div
+      class="day"
+    >
+      <div
+        class="day-num"
+      >
+        
+        13
+      
+      </div>
+       
+      <dl
+        class="event-list"
+      />
+    </div>
+    <div
+      class="day"
+    >
+      <div
+        class="day-num"
+      >
+        
+        14
+      
+      </div>
+       
+      <dl
+        class="event-list"
+      />
+    </div>
+    <div
+      class="day"
+    >
+      <div
+        class="day-num"
+      >
+        
+        15
+      
+      </div>
+       
+      <dl
+        class="event-list"
+      />
+    </div>
+    <div
+      class="day"
+    >
+      <div
+        class="day-num"
+      >
+        
+        16
+      
+      </div>
+       
+      <dl
+        class="event-list"
+      />
+    </div>
+    <div
+      class="day"
+    >
+      <div
+        class="day-num"
+      >
+        
+        17
+      
+      </div>
+       
+      <dl
+        class="event-list"
+      />
+    </div>
+    <div
+      class="day"
+    >
+      <div
+        class="day-num"
+      >
+        
+        18
+      
+      </div>
+       
+      <dl
+        class="event-list"
+      />
+    </div>
+    <div
+      class="day"
+    >
+      <div
+        class="day-num"
+      >
+        
+        19
+      
+      </div>
+       
+      <dl
+        class="event-list"
+      />
+    </div>
+    <div
+      class="day"
+    >
+      <div
+        class="day-num"
+      >
+        
+        20
+      
+      </div>
+       
+      <dl
+        class="event-list"
+      />
+    </div>
+    <div
+      class="day"
+    >
+      <div
+        class="day-num"
+      >
+        
+        21
+      
+      </div>
+       
+      <dl
+        class="event-list"
+      />
+    </div>
+    <div
+      class="day"
+    >
+      <div
+        class="day-num"
+      >
+        
+        22
+      
+      </div>
+       
+      <dl
+        class="event-list"
+      />
+    </div>
+    <div
+      class="day"
+    >
+      <div
+        class="day-num"
+      >
+        
+        23
+      
+      </div>
+       
+      <dl
+        class="event-list"
+      />
+    </div>
+    <div
+      class="day"
+    >
+      <div
+        class="day-num"
+      >
+        
+        24
+      
+      </div>
+       
+      <dl
+        class="event-list"
+      />
+    </div>
+    <div
+      class="day"
+    >
+      <div
+        class="day-num"
+      >
+        
+        25
+      
+      </div>
+       
+      <dl
+        class="event-list"
+      />
+    </div>
+    <div
+      class="day"
+    >
+      <div
+        class="day-num"
+      >
+        
+        26
+      
+      </div>
+       
+      <dl
+        class="event-list"
+      />
+    </div>
+    <div
+      class="day"
+    >
+      <div
+        class="day-num"
+      >
+        
+        27
+      
+      </div>
+       
+      <dl
+        class="event-list"
+      />
+    </div>
+    <div
+      class="day"
+    >
+      <div
+        class="day-num"
+      >
+        
+        28
+      
+      </div>
+       
+      <dl
+        class="event-list"
+      />
+    </div>
+    <div
+      class="day"
+    >
+      <div
+        class="day-num"
+      >
+        
+        29
+      
+      </div>
+       
+      <dl
+        class="event-list"
+      />
+    </div>
+  </div>
+</div>
+`;
