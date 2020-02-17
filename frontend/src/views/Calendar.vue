@@ -53,7 +53,7 @@ export default {
     }
   },
   computed: {
-    ...mapState(['events'])
+    ...mapState(['eventsList'])
   },
   created () {
     this.resetDialogModel()
@@ -70,7 +70,8 @@ export default {
       'deleteEventById'
     ]),
     setSelectedEvent (event) {
-      this.events.filter(event => event.selected).forEach(event => (event.selected = false))
+      this.eventsList.filter(event => event.selected).forEach(event => (event.selected = false))
+      this.selectedEvent = event
       if (event) {
         this.$set(event, 'selected', !event.selected)
       }
@@ -140,7 +141,7 @@ export default {
       if (result) {
         this.dialog = false
         await this.getEvents()
-        const event = this.events.find(event => event.id === data.id)
+        const event = this.eventsList.find(event => event.id === data.id)
         this.setSelectedEvent(event)
       } else {
         setTimeout(() => alert(message))
@@ -151,7 +152,7 @@ export default {
       if (result) {
         this.dialog = false
         await this.getEvents()
-        const event = this.events.find(event => event.id === data.id)
+        const event = this.eventsList.find(event => event.id === data.id)
         this.setSelectedEvent(event)
       } else {
         setTimeout(() => alert(message))
@@ -161,7 +162,7 @@ export default {
       const { result, message, data } = await this.updateEventDateById(newEvent)
       if (result) {
         await this.getEvents()
-        const event = this.events.find(event => event.id === data.id)
+        const event = this.eventsList.find(event => event.id === data.id)
         this.setSelectedEvent(event)
       } else {
         setTimeout(() => alert(message))
