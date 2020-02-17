@@ -16,8 +16,9 @@ describe('CalendarView.vue', () => {
   })
 
   it('날짜 선택 이벤트를 수신하여 부모로 이벤트를 전달해야 한다.', () => {
-    wrapper.vm.selectDay(currentDate)
-    expect(wrapper.emitted()['day-selected'][0][0]).toEqual(currentDate)
+    const combined = moment(currentDate).hours(moment().hours())
+    wrapper.vm.selectDay(combined)
+    expect(wrapper.emitted()['day-selected'][0][0]).toEqual(combined)
   })
 
   it('날짜, 시간 선택 이벤트를 수신하여 부모로 이벤트를 전달해야 한다.', () => {
