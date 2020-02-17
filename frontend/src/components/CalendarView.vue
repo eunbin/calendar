@@ -1,49 +1,33 @@
 <template>
-  <div class="calendar-view">
-    <div class="day-of-week">
-      <div>일</div>
-      <div>월</div>
-      <div>화</div>
-      <div>수</div>
-      <div>목</div>
-      <div>금</div>
-      <div>토</div>
-    </div>
-    <div
-        v-if="viewType === 'month'"
-        class="date-grid">
-      <div v-for="(day, index) in days"
-           :key="index"
-           :style="{ gridColumn: column(index) }"
-           class="day"
-           @dragover.prevent
-           @dragenter.prevent
-           @drop.prevent="onDrop(day)"
-           @click="selectDay(day)">
-        <div class="day-num"
-             :class="{ 'today': today(day) }">{{ `${day.date()}일` }}</div>
-        <div class="event-list">
-          <div v-for="(event, index) in getEvents(day.date())"
-               :key="index"
-               :class="{ 'is-selected': event.selected }"
-               class="event"
-               draggable="true"
-               @dragstart="onDragStart(event)"
-               @click.stop="selectEvent(event)">
-            <div>{{ event }}</div>
-          </div>
-        </div>
-      </div>
-    </div>
-    <div v-else>
-      주
-    </div>
+  <div class="calendar__view">
+    <template v-if="isMonthView">
+      <monthly
+        :current-date="currentDate"
+        :today="today"
+        @day-selected="selectDay"
+        @event-selected="selectEvent"
+        @event-moved="onMoveEvent"
+      />
+    </template>
+    <template v-else>
+      <weekly
+        :current-date="currentDate"
+        @hour-selected="selectHour"
+        @event-selected="selectEvent"
+        @event-moved="onMoveEvent"
+      />
+    </template>
   </div>
 </template>
 
 <script>
+import Monthly from '@/components/view/Monthly'
+import Weekly from '@/components/view/Weekly'
+import { viewTypes } from '@/types/calendar'
+
 export default {
   name: 'CalendarView',
+  components: { Monthly, Weekly },
   props: {
     viewType: {
       type: String,
@@ -53,12 +37,8 @@ export default {
       type: Object,
       default: null
     },
-    selectedDate: {
+    today: {
       type: Object,
-      default: null
-    },
-    selectedEvent: {
-      type: String,
       default: null
     },
     events: {
@@ -66,155 +46,25 @@ export default {
       default: null
     }
   },
-  data () {
-    return {
-      days: [],
-      draggingEvent: null
+  computed: {
+    isMonthView () {
+      return this.viewType === viewTypes.MONTH
     }
-  },
-  watch: {
-    viewType () {
-    },
-    currentDate () {
-      this.buildDays()
-    },
-    selectedEvent () {
-    }
-  },
-  created () {
-  },
-  mounted () {
-    this.buildDays()
   },
   methods: {
-    column (index) {
-      // 첫번째 시작위치
-      if (index === 0) {
-        return this.days[0].day() + 1
-      }
-    },
-    today (day) {
-      return this.selectedDate && this.selectedDate.isSame(day, 'day')
-    },
-    buildDays () {
-      const monthDate = this.currentDate.clone().startOf('month')
-      this.days = [...Array(monthDate.daysInMonth())].map((_, i) => {
-        return monthDate.clone().add(i, 'day')
-      })
-    },
-    // TODO: event delegation
     selectEvent (event) {
       this.$emit('event-selected', event)
     },
     selectDay (date) {
       this.$emit('day-selected', date)
     },
-    getEvents (date) {
-      // TODO: sort by startDate
-      return this.events.filter(event => event.day === parseInt(date))
+    selectHour (date, hour) {
+      date.hours(hour.hours())
+      this.$emit('hour-selected', date)
     },
-    onDragStart (event) {
-      console.log('onDragStart')
-      this.draggingEvent = event
-    },
-    onDrop (newDate) {
-      console.log('onDrop')
-      // FIXME: 이벤트끼리 겹치는 경우 drag 중인 이벤트 유실됨
-      const event = this.draggingEvent
-      if (event) {
-        console.log(newDate, newDate.date())
-        event.day = newDate.date()
-      }
-      this.draggingEvent = null
+    onMoveEvent (payload) {
+      this.$emit('event-moved', payload)
     }
   }
 }
 </script>
-
-<style lang="scss" scoped>
-  .calendar-view {
-    width: 100%;
-    height: calc(100% - 50px);
-  }
-
-  .day-of-week,
-  .date-grid {
-    display: grid;
-    grid-template-columns: repeat(7, 1fr);
-    grid-template-rows: auto;
-  }
-  .date-grid {
-    height: 100%;
-  }
-
-  .day-of-week {
-    margin-top: 1.25em;
-  }
-
-  .day-of-week > * {
-    font-size: 1.2em;
-    color: var(--color-text);
-    font-weight: 500;
-    letter-spacing: 0.1em;
-    text-align: center;
-  }
-
-  .date-grid {
-    margin-top: 0.5em;
-  }
-
-  .date-grid .day {
-    position: relative;
-    display: flex;
-    flex-direction: column;
-    align-items: flex-start;
-    justify-content: flex-start;
-    border: 1px solid #000;
-    background-color: transparent;
-    color: var(--color-text);
-
-    .day-num {
-      display: flex;
-      justify-content: flex-end;
-      width: 100%;
-      &.today {
-        background-color: var(--color-primary);
-        color: var(--color-text);
-      }
-    }
-
-    .event-list {
-      width: 100%;
-      text-align: left;
-      .event {
-        display: flex;
-        &:before {
-          flex: none;
-          margin: 0 3px 0 3px;
-          content: '';
-          display: inline-block;
-          width: 10px;
-          height: 10px;
-          -moz-border-radius: 7.5px;
-          -webkit-border-radius: 7.5px;
-          border-radius: 7.5px;
-          background-color: var(--color-info);
-        }
-        &:hover,
-        &:focus {
-          outline: none;
-          background-color: var(--color-gray);
-          color: var(--color-text);
-        }
-
-        &:active {
-          color: var(--color-secondary);
-        }
-        &.is-selected {
-          background-color: var(--color-primary);
-        }
-      }
-    }
-  }
-
-</style>

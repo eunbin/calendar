@@ -1,4 +1,4 @@
-const home = (req, res) => res.send("Hello Calendar");
+const home = (req, res) => res.redirect(301, '/events');
 
 export {
   home

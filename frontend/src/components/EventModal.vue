@@ -1,25 +1,92 @@
 <template>
-  <div class="modal"
-       :class="{ show: value }">
+  <div
+    role="dialog"
+    class="modal"
+    :class="{ show: value }"
+  >
     <div class="modal__inner">
-      <button class="modal__close"
-              @click="close"></button>
-      <template v-if="isAdd">
-        <h2>lorem ipsum</h2>
-        <p>lorem ipsum lorem ipsum</p>
-      </template>
-      <template v-else>
-        <h2>{{ event }}</h2>
-      </template>
-      <button @click="submit">저장</button>
-      <button @click="close">취소</button>
+      <button
+        class="modal__close"
+        @click="close"
+      />
+      <h2>{{ modalTitle }}</h2>
+      <div class="form">
+        <div>
+          <label for="title">일정 제목</label>
+          <input
+            id="title"
+            v-model="model.title"
+            type="text"
+            maxlength="30"
+          >
+        </div>
+        <div>
+          <label for="startDate">시작 시간</label>
+          <date-pick
+            id="startDate"
+            v-model="model.start.dateTime"
+            start-week-on-sunday
+            pick-time
+            :format="dateFormat.DATE_TIME"
+            @input="onChangeStartDateTime"
+          />
+        </div>
+        <div>
+          <label for="endDate">종료 시간</label>
+          <date-pick
+            id="endDate"
+            v-model="model.end.dateTime"
+            start-week-on-sunday
+            pick-time
+            :format="dateFormat.DATE_TIME"
+            @input="onChangeEndDateTime"
+          />
+        </div>
+      </div>
+      <div
+        v-if="errors.length"
+        class="validation"
+      >
+        <b>아래 에러를 확인해주세요.</b>
+        <ul>
+          <li
+            v-for="(error, index) in errors"
+            :key="index"
+          >
+            {{ error }}
+          </li>
+        </ul>
+      </div>
+      <div class="modal__action">
+        <button @click="close">
+          취소
+        </button>
+        <button
+          v-if="!isAdd"
+          class="accent"
+          @click="deleteEvent"
+        >
+          삭제
+        </button>
+        <button
+          class="info"
+          @click="submit"
+        >
+          {{ submitButtonLabel }}
+        </button>
+      </div>
     </div>
   </div>
 </template>
 
 <script>
+import DatePick from 'vue-date-pick'
+import moment from 'moment'
+import { modalTitles } from '@/types/calendar'
+
 export default {
   name: 'EventModal',
+  components: { DatePick },
   props: {
     value: {
       type: Boolean,
@@ -27,24 +94,107 @@ export default {
     },
     event: {
       type: Object,
-      default: null
+      default: () => {}
     }
   },
   data () {
     return {
+      model: null,
+      errors: []
     }
   },
   computed: {
+    modalTitle () {
+      return this.isAdd ? modalTitles.ADD_EVENT : modalTitles.UPDATE_EVENT
+    },
     isAdd () {
-      return !this.event
+      return !this.model.id
+    },
+    submitButtonLabel () {
+      return this.isAdd ? '등록' : '저장'
     }
   },
+  watch: {
+    event: {
+      immediate: true,
+      handler () {
+        this.model = { ...this.event }
+        this.errors = []
+      }
+    }
+  },
+  created () {
+    this.addEventListeners()
+  },
+  beforeDestroy () {
+    this.removeEventListeners()
+  },
   methods: {
+    addEventListeners () {
+      document.addEventListener('keydown', this.handleKeyDown)
+      document.addEventListener('click', this.handleClick)
+    },
+    removeEventListeners () {
+      document.addEventListener('keydown', this.handleKeyDown)
+      document.addEventListener('click', this.handleClick)
+    },
+    onChangeStartDateTime (val) {
+      const startDateTime = moment(val)
+      const endDateTime = startDateTime.clone().add(1, 'hour')
+      this.model.start.date = startDateTime.format(this.dateFormat.DATE)
+      this.model.end.date = endDateTime.format(this.dateFormat.DATE)
+      this.model.end.dateTime = endDateTime.format(this.dateFormat.DATE_TIME)
+    },
+    onChangeEndDateTime (val) {
+      const endDateTime = moment(val)
+      const startDateTime = endDateTime.clone().subtract(1, 'hour')
+      this.model.end.date = endDateTime.format(this.dateFormat.DATE)
+      this.model.start.date = startDateTime.format(this.dateFormat.DATE)
+      this.model.start.dateTime = startDateTime.format(this.dateFormat.DATE_TIME)
+    },
     submit () {
-      this.$emit('submit', this.event)
+      if (!this.isValidForm()) {
+        return
+      }
+      if (this.isAdd) {
+        this.$emit('add', this.model)
+      } else {
+        this.$emit('update', this.model)
+      }
+    },
+    deleteEvent () {
+      this.$emit('delete')
     },
     close () {
       this.$emit('close')
+    },
+    isValidForm () {
+      if (this.model.title && this.model.start && this.model.end) {
+        return true
+      }
+      this.errors = []
+      if (!this.model.title) {
+        this.errors.push('일정 제목 입력은 필수입니다.')
+      }
+      if (!this.model.start) {
+        this.errors.push('시작날짜 입력은 필수입니다.')
+      }
+      if (!this.model.end) {
+        this.errors.push('종료날짜 입력은 필수입니다.')
+      }
+      return false
+    },
+    handleKeyDown (e) {
+      const keyCode = e.keyCode
+      if (keyCode === 27) {
+        this.close()
+      }
+    },
+    handleClick (e) {
+      // FIXME: date-picker close
+      if (!e.target.closest('.modal__inner')) {
+        this.close()
+      }
     }
   }
 }
@@ -95,7 +245,46 @@ export default {
     background: #fff;
     border-radius: 5px;
     padding: 1em 2em;
-    height: 50%;
+    height: 700px;
+
+    & .form {
+      margin-top: 1em;
+      margin-bottom: 1em;
+      input {
+        width: 100%;
+        padding: 12px 20px;
+        margin: 8px 0;
+        display: inline-block;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+        box-sizing: border-box;
+        font-size: 14px;
+      }
+    }
+    .validation {
+      color: var(--color-accent);
+      font-size: .8em;
+    }
+    .modal__action {
+      display: flex;
+      justify-content: flex-end;
+      > button {
+        border: none;
+        background-color: var(--color-gray);
+        padding: 16px 32px;
+        text-decoration: none;
+        margin: 4px 2px;
+        cursor: pointer;
+        &.info {
+          background-color: var(--color-info);
+          color: white;
+        }
+        &.accent {
+          background-color: var(--color-accent);
+          color: white;
+        }
+      }
+    }
   }
 
   .modal__close {

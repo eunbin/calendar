@@ -1,0 +1,22 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Calendar.vue snapshot check 1`] = `
+<div
+  class="calendar"
+>
+  <calendar-header-stub
+    currentdate="Mon Feb 17 2020 00:00:00 GMT+0900"
+    viewtype="month"
+  />
+   
+  <calendar-view-stub
+    currentdate="Mon Feb 17 2020 00:00:00 GMT+0900"
+    today="Mon Feb 17 2020 00:00:00 GMT+0900"
+    viewtype="month"
+  />
+   
+  <event-modal-stub
+    event="[object Object]"
+  />
+</div>
+`;
