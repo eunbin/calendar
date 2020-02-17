@@ -83,6 +83,7 @@ $header-height: 50px;
 }
 
 header {
+  position: relative;
   height: $header-height;
   display: flex;
   justify-content: center;
@@ -101,7 +102,9 @@ header {
   }
 
   .view-type {
-    margin-left: 50px;
+    position: absolute;
+    right: 0;
+    height: 100%;
     button {
       @include btn--normal;
       &:not(:last-child) {
