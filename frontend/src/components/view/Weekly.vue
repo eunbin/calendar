@@ -30,7 +30,7 @@
         >
           <dl class="event-list">
             <dt
-              v-for="(event, j) in getEventsByMap(day, hour)"
+              v-for="(event, j) in getEventsByDayAndHour(day, hour)"
               :key="j"
               :class="{ 'selected': event.selected }"
               class="event"
@@ -50,6 +50,7 @@
 <script>
 import moment from 'moment'
 import dateMixin from '@/mixins/date'
+import { mapGetters } from 'vuex'
 
 export default {
   name: 'Weekly',
@@ -65,6 +66,7 @@ export default {
     }
   },
   computed: {
+    ...mapGetters(['getEventsByDayAndHour']),
     dayOfWeek () {
       const startOfWeek = this.currentDate.clone().startOf('week').subtract(1, 'd')
       return moment.weekdays().map(() => startOfWeek.add(1, 'd').clone())
@@ -74,13 +76,6 @@ export default {
     }
   },
   methods: {
-    getEventsByMap (day, hour) {
-      const events = this.eventsMap[day.format(this.dateFormat.DATE)]
-      if (events) {
-        return events.filter(event => moment(event.start.dateTime).hours() === hour.hours())
-      }
-      return []
-    },
     onDrop (date, hour) {
       const event = this.draggingEvent
       if (event) {

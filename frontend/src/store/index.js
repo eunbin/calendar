@@ -1,24 +1,47 @@
 import api from '@/service/api'
 import Vue from 'vue'
 import Vuex from 'vuex'
+import { dateFormat } from '@/types/date'
+import moment from 'moment'
 
 Vue.use(Vuex)
 
 const store = new Vuex.Store({
   state: {
-    events: []
+    eventsMap: {}
   },
-  getters: {},
+  getters: {
+    getEventsByDay: (state) => (day) => {
+      if (!day) {
+        return []
+      }
+      return state.eventsMap[day.format(dateFormat.DATE)]
+    },
+    getEventsByDayAndHour: (state) => (day, hour) => {
+      if (!day || !hour) {
+        return []
+      }
+      const events = state.eventsMap[day.format(dateFormat.DATE)]
+      if (!events) {
+        return []
+      }
+      return events.filter(event => moment(event.start.dateTime).hours() === hour.hours())
+    }
+  },
   mutations: {
-    SET_EVENTS (state, { data }) {
-      state.events = data
+    SET_EVENTS (state, events) {
+      state.eventsMap = events
     }
   },
   actions: {
     async getEvents ({ commit }) {
       try {
-        const { data } = await api.getEvents()
-        commit('SET_EVENTS', data)
+        const { data: { data } } = await api.getEvents()
+        const res = data.reduce((res, event) => {
+          res[event.start.date] = res[event.start.date] ? [...res[event.start.date], event] : [event]
+          return res
+        }, {})
+        commit('SET_EVENTS', res)
       } catch (e) {
         console.error((e.response && e.response.data.message) || e)
         return (e.response && e.response.data) || e

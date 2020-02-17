@@ -29,7 +29,7 @@
         </div>
         <dl class="event-list">
           <dt
-            v-for="(event, j) in getEventsMap(day)"
+            v-for="(event, j) in getEventsByDay(day)"
             :key="j"
             :class="{ 'selected': event.selected }"
             class="event"
@@ -47,6 +47,7 @@
 </template>
 
 <script>
+import { mapGetters } from 'vuex'
 import moment from 'moment'
 
 export default {
@@ -59,10 +60,6 @@ export default {
     today: {
       type: Object,
       default: null
-    },
-    eventsMap: {
-      type: Object,
-      default: () => {}
     }
   },
   data () {
@@ -71,6 +68,7 @@ export default {
     }
   },
   computed: {
+    ...mapGetters(['getEventsByDay']),
     dayOfWeek () {
       return moment.weekdays()
     }
@@ -122,9 +120,6 @@ export default {
     },
     formatDate (date) {
       return moment(date).format(this.dateFormat.TIME)
-    },
-    getEventsMap (day) {
-      return this.eventsMap[day.format(this.dateFormat.DATE)]
     },
     onDrop (date, hour) {
       const event = this.draggingEvent

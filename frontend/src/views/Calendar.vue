@@ -11,7 +11,6 @@
       :view-type="viewType"
       :current-date="currentDate"
       :today="today"
-      :events="events"
       @event-selected="onSelectEvent"
       @hour-selected="openDialog"
       @day-selected="openDialog"
