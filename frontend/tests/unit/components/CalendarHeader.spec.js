@@ -18,11 +18,6 @@ const createOption = () => {
 }
 
 describe('CalendarHeader.vue', () => {
-  it('항상 동일한 컨텐츠가 렌더링되어야 한다.', () => {
-    const wrapper = mount(CalendarHeader, createOption())
-    expect(wrapper.vm.$el).toMatchSnapshot()
-  })
-
   it('오늘 날짜를 기준으로 YYYY년 MM월 타이틀이 보여진다.', () => {
     const option = createOption()
 

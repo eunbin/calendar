@@ -21,14 +21,6 @@ describe('Calendar.vue', () => {
     })
   })
 
-  it('snapshot check', () => {
-    const wrapper = shallowMount(Calendar, {
-      localVue,
-      store
-    })
-    expect(wrapper.vm.$el).toMatchSnapshot()
-  })
-
   it('Created Hook 에 getEvents()가 호출되어야 한다.', () => {
     expect(typeof Calendar.created).toBe('function')
 
