@@ -21,6 +21,7 @@ const store = new Vuex.Store({
         commit('SET_EVENTS', data)
       } catch (e) {
         console.error((e.response && e.response.data.message) || e)
+        return (e.response && e.response.data) || e
       }
     },
     async addEvent ({ commit }, newEvent) {
@@ -29,6 +30,7 @@ const store = new Vuex.Store({
         return data
       } catch (e) {
         console.error((e.response && e.response.data.message) || e)
+        return (e.response && e.response.data) || e
       }
     },
     async updateEventById ({ commit }, event) {
@@ -38,6 +40,7 @@ const store = new Vuex.Store({
         return data
       } catch (e) {
         console.error((e.response && e.response.data.message) || e)
+        return (e.response && e.response.data) || e
       }
     },
     async updateEventDateById ({ commit }, { id, start, end }) {
@@ -46,6 +49,7 @@ const store = new Vuex.Store({
         return data
       } catch (e) {
         console.error((e.response && e.response.data.message) || e)
+        return (e.response && e.response.data) || e
       }
     },
     async deleteEventById ({ commit }, id) {
@@ -54,6 +58,7 @@ const store = new Vuex.Store({
         return data
       } catch (e) {
         console.error((e.response && e.response.data.message) || e)
+        return (e.response && e.response.data) || e
       }
     }
   }
