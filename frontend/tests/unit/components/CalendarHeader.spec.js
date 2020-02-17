@@ -1,4 +1,4 @@
-import { shallowMount, mount } from '@vue/test-utils'
+import { mount } from '@vue/test-utils'
 import CalendarHeader from '@/components/CalendarHeader.vue'
 import dateMixin from '@/mixins/date'
 import { dateFormat } from '@/types/date'
@@ -26,7 +26,7 @@ describe('CalendarHeader.vue', () => {
   it('오늘 날짜를 기준으로 YYYY년 MM월 타이틀이 보여진다.', () => {
     const option = createOption()
 
-    const wrapper = shallowMount(CalendarHeader, option)
+    const wrapper = mount(CalendarHeader, option)
 
     expect(wrapper.vm.title).toMatch(currentDate.format(dateFormat.YEAR_AND_MONTH))
   })
@@ -34,7 +34,7 @@ describe('CalendarHeader.vue', () => {
   it('기본 보기모드는 DEFAULT_VIEW_TYPE 과 같아야 한다.', () => {
     const option = createOption()
 
-    const wrapper = shallowMount(CalendarHeader, option)
+    const wrapper = mount(CalendarHeader, option)
 
     expect(wrapper.vm.$data.type).toBe(DEFAULT_VIEW_TYPE)
   })
