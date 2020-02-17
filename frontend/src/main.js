@@ -6,6 +6,7 @@ import store from './store'
 import dateMixin from './mixins/date.vue'
 import './plugins/httpClient'
 import 'moment/locale/ko'
+import router from './router'
 
 Vue.config.productionTip = false
 
@@ -13,5 +14,6 @@ Vue.mixin(dateMixin)
 
 new Vue({
   store,
+  router,
   render: h => h(App)
 }).$mount('#app')
