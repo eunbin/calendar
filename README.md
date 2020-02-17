@@ -41,12 +41,12 @@
 *  서버 실행  
 ```  
 $ cd backend  
-$ npm run start // 5000 번 포트 사용  
+$ npm run start // 5000 번 포트 사용 	// npm run install && babel-node init.js 실행
 ```  
 * Frontend App 실행  
 ```  
 $ cd frontend  
-$ npm run serve  // 8080 번 포트 사용
+$ npm run start  // 8080 번 포트 사용	// npm run install && npm run serve 실행
 ```  
 * 브라우저에서 접속  
   * http://localhost:8080
