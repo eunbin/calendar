@@ -83,8 +83,7 @@ export default {
     },
     openDialog (selectedDay) {
       this.setSelectedEvent(null)
-      const now = moment().hours()
-      const startDateTime = selectedDay.clone().hours(now)
+      const startDateTime = selectedDay
       const endDateTime = startDateTime.clone().add(1, 'hour')
       this.dialogModel = {
         title: '새로운 이벤트',
