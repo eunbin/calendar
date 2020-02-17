@@ -33,6 +33,16 @@ describe('Monthly.vue', () => {
       getters: getters
     })
   })
+
+  it('snapshot check', () => {
+    const wrapper = mount(Monthly, Object.assign(createOption(), {
+      localVue,
+      store
+    }))
+
+    expect(wrapper.vm.$el).toMatchSnapshot()
+  })
+
   it('컴포넌트가 정상적으로 동작되면 days-of-week 컬럼이 생성된다.', async () => {
     const wrapper = mount(Monthly, Object.assign(createOption(), {
       localVue,
