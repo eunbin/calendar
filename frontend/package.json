@@ -6,6 +6,7 @@
     "start": "npm install && npm run serve",
     "serve": "vue-cli-service serve",
     "build": "vue-cli-service build",
+    "deploy": "npm install && npm run build",
     "test:unit": "vue-cli-service test:unit",
     "lint": "vue-cli-service lint",
     "lintfix": "vue-cli-service lint --fix"
