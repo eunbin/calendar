@@ -83,6 +83,8 @@
 import DatePick from 'vue-date-pick'
 import moment from 'moment'
 import { modalTitles } from '@/types/calendar'
+import { dateFormat } from '@/types/date'
+import { cloneDeep } from '../utils'
 
 export default {
   name: 'EventModal',
@@ -100,7 +102,8 @@ export default {
   data () {
     return {
       model: null,
-      errors: []
+      errors: [],
+      dateFormat
     }
   },
   computed: {
@@ -118,7 +121,7 @@ export default {
     event: {
       immediate: true,
       handler () {
-        this.model = { ...this.event }
+        this.model = cloneDeep({ ...this.event })
         this.errors = []
       }
     }
@@ -140,21 +143,25 @@ export default {
     },
     onChangeStartDateTime (val) {
       if (!val) {
+        this.model.start.date = ''
         return
       }
       const startDateTime = moment(val)
       const endDateTime = startDateTime.clone().add(1, 'hour')
       this.model.start.date = startDateTime.format(this.dateFormat.DATE)
+      this.model.start.dateTime = startDateTime.format(this.dateFormat.DATE_TIME)
       this.model.end.date = endDateTime.format(this.dateFormat.DATE)
       this.model.end.dateTime = endDateTime.format(this.dateFormat.DATE_TIME)
     },
     onChangeEndDateTime (val) {
       if (!val) {
+        this.model.end.date = ''
         return
       }
       const endDateTime = moment(val)
       const startDateTime = endDateTime.clone().subtract(1, 'hour')
       this.model.end.date = endDateTime.format(this.dateFormat.DATE)
+      this.model.end.dateTime = endDateTime.format(this.dateFormat.dateTime)
       this.model.start.date = startDateTime.format(this.dateFormat.DATE)
       this.model.start.dateTime = startDateTime.format(this.dateFormat.DATE_TIME)
     },
