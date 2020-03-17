@@ -7,8 +7,8 @@ import moment from 'moment'
 Vue.use(Vuex)
 
 const createError = (e) => ({
-  result: false,
-  message: (e.response && e.response.data) || e
+  result: (e.response && e.response.data && e.response.data.result) || false,
+  message: (e.response && e.response.data && e.response.data.message) || e
 })
 
 const store = new Vuex.Store({
