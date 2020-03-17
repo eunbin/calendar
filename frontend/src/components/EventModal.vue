@@ -193,8 +193,7 @@ export default {
       }
     },
     handleClick (e) {
-      // FIXME: date-picker close
-      if (!e.target.closest('.modal__inner')) {
+      if (!e.target.closest('.modal__inner') && !e.target.closest('.vdpClearInput')) {
         this.close()
       }
     }
