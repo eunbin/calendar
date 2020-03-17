@@ -12,5 +12,5 @@ module.exports = {
   },
   outputDir: '../backend/public',
   indexPath: '../public/index.html',
-  productionSourceMap: false,
+  productionSourceMap: false
 }
