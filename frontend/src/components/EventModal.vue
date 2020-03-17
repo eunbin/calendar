@@ -204,7 +204,7 @@ export default {
   .modal {
     opacity: 0;
     visibility: hidden;
-    position: fixed;
+    position: absolute;
     top: 0;
     right: 0;
     bottom: 0;
@@ -212,110 +212,98 @@ export default {
     text-align: left;
     background: rgba(0, 0, 0, .5);
     transition: opacity .25s ease;
-  }
 
-  .modal__bg {
-    position: absolute;
-    top: 0;
-    right: 0;
-    bottom: 0;
-    left: 0;
-    cursor: pointer;
-  }
+    &.show  {
+      opacity: 1;
+      visibility: visible;
+    }
 
-  .modal-state {
-    display: none;
-  }
+    .modal__inner {
+      transition: top .25s ease;
+      position: absolute;
+      top: 0;
+      right: 0;
+      bottom: 0;
+      left: 0;
+      margin: auto;
+      width: 500px;
+      height: 500px;
+      background: #fff;
+      border-radius: 5px;
+      padding: 1em 2em;
 
-  .show  {
-    opacity: 1;
-    visibility: visible;
-  }
-
-  .modal__inner {
-    transition: top .25s ease;
-    position: absolute;
-    top: -20%;
-    right: 0;
-    bottom: 0;
-    left: 0;
-    width: 50%;
-    margin: auto;
-    overflow: auto;
-    background: #fff;
-    border-radius: 5px;
-    padding: 1em 2em;
-    height: 700px;
-
-    & .form {
-      margin-top: 1em;
-      margin-bottom: 1em;
-      input {
-        width: 100%;
-        padding: 12px 20px;
-        margin: 8px 0;
-        display: inline-block;
-        border: 1px solid #ccc;
-        border-radius: 4px;
-        box-sizing: border-box;
-        font-size: 14px;
+      .form {
+        margin-top: 1em;
+        margin-bottom: 1em;
+        input {
+          width: 100%;
+          padding: 12px 20px;
+          margin: 8px 0;
+          display: inline-block;
+          border: 1px solid #ccc;
+          border-radius: 4px;
+          box-sizing: border-box;
+          font-size: 14px;
+        }
       }
-    }
-    .validation {
-      color: var(--color-accent);
-      font-size: .8em;
-    }
-    .modal__action {
-      display: flex;
-      justify-content: flex-end;
-      > button {
+      .validation {
+        color: var(--color-accent);
+        font-size: .8em;
+      }
+
+      .modal__close {
+        position: absolute;
+        right: 1em;
+        top: 1em;
+        width: 1.1em;
+        height: 1.1em;
         border: none;
-        background-color: var(--color-gray);
-        padding: 16px 32px;
-        text-decoration: none;
-        margin: 4px 2px;
         cursor: pointer;
-        &.info {
-          background-color: var(--color-info);
-          color: white;
+        &:after,
+        &:before {
+          content: '';
+          position: absolute;
+          width: 2px;
+          height: 1.5em;
+          background: #ccc;
+          display: block;
+          transform: rotate(45deg);
+          left: 50%;
+          margin: -3px 0 0 -1px;
+          top: 0;
         }
-        &.accent {
-          background-color: var(--color-accent);
-          color: white;
+
+        &:hover:after,
+        &:hover:before {
+          background: #aaa;
+        }
+
+        &:before {
+          transform: rotate(-45deg);
+        }
+      }
+
+      .modal__action {
+        display: flex;
+        justify-content: flex-end;
+        > button {
+          border: none;
+          background-color: var(--color-gray);
+          padding: 16px 32px;
+          text-decoration: none;
+          margin: 4px 2px;
+          cursor: pointer;
+          &.info {
+            background-color: var(--color-info);
+            color: white;
+          }
+          &.accent {
+            background-color: var(--color-accent);
+            color: white;
+          }
         }
       }
     }
-  }
 
-  .modal__close {
-    position: absolute;
-    right: 1em;
-    top: 1em;
-    width: 1.1em;
-    height: 1.1em;
-    cursor: pointer;
-  }
-
-  .modal__close:after,
-  .modal__close:before {
-    content: '';
-    position: absolute;
-    width: 2px;
-    height: 1.5em;
-    background: #ccc;
-    display: block;
-    transform: rotate(45deg);
-    left: 50%;
-    margin: -3px 0 0 -1px;
-    top: 0;
-  }
-
-  .modal__close:hover:after,
-  .modal__close:hover:before {
-    background: #aaa;
-  }
-
-  .modal__close:before {
-    transform: rotate(-45deg);
   }
 </style>

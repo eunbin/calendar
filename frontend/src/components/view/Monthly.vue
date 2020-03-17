@@ -156,6 +156,7 @@ export default {
 
 <style lang="scss" scoped>
 $day-width: 100% / 7;
+$days-of-week-width: 44px;
 
 .month-view {
   height: 100%;
@@ -165,21 +166,21 @@ $day-width: 100% / 7;
   .days-of-month {
     display: grid;
     grid-template-columns: repeat(7, 1fr);
-    grid-template-rows: repeat(auto-fit, minmax(50px, 1fr));
+    grid-template-rows: repeat(auto-fit, minmax($days-of-week-width, 1fr));
   }
   .days-of-month {
     height: 100%;
   }
   .days-of-week {
-    height: 44px;
-    line-height: 44px;
+    height: $days-of-week-width;
+    line-height: $days-of-week-width;
     background-color: var(--color-primary);
-    & > * {
-      font-size: 1.2em;
+    & > span {
       color: var(--color-text);
+      text-align: center;
+      font-size: 1.2em;
       font-weight: 500;
       letter-spacing: 0.1em;
-      text-align: center;
     }
   }
 
