@@ -139,6 +139,9 @@ export default {
       document.removeEventListener('click', this.handleClick)
     },
     onChangeStartDateTime (val) {
+      if (!val) {
+        return
+      }
       const startDateTime = moment(val)
       const endDateTime = startDateTime.clone().add(1, 'hour')
       this.model.start.date = startDateTime.format(this.dateFormat.DATE)
@@ -146,6 +149,9 @@ export default {
       this.model.end.dateTime = endDateTime.format(this.dateFormat.DATE_TIME)
     },
     onChangeEndDateTime (val) {
+      if (!val) {
+        return
+      }
       const endDateTime = moment(val)
       const startDateTime = endDateTime.clone().subtract(1, 'hour')
       this.model.end.date = endDateTime.format(this.dateFormat.DATE)
@@ -169,8 +175,8 @@ export default {
       this.$emit('close')
     },
     isValidForm () {
-      const isStartNotEmpty = this.model.start && this.model.start.date && this.model.start.dateTime
-      const isEndNotEmpty = this.model.end && this.model.end.date && this.model.end.dateTime
+      const isStartNotEmpty = !!(this.model.start && this.model.start.date && this.model.start.dateTime)
+      const isEndNotEmpty = !!(this.model.end && this.model.end.date && this.model.end.dateTime)
       if (this.model.title && isStartNotEmpty && isEndNotEmpty) {
         return true
       }
