@@ -135,8 +135,8 @@ export default {
       document.addEventListener('click', this.handleClick)
     },
     removeEventListeners () {
-      document.addEventListener('keydown', this.handleKeyDown)
-      document.addEventListener('click', this.handleClick)
+      document.removeEventListener('keydown', this.handleKeyDown)
+      document.removeEventListener('click', this.handleClick)
     },
     onChangeStartDateTime (val) {
       const startDateTime = moment(val)
