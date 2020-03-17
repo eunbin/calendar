@@ -15,7 +15,6 @@
         :key="i"
         class="day"
         @dragover.prevent
-        @dragenter.prevent
         @drop.prevent="onDrop(day)"
         @click.stop="selectDay(day)"
       >
@@ -27,8 +26,8 @@
         >
           {{ day.date() }}
         </div>
-        <dl class="event-list">
-          <dt
+        <ul class="event-list">
+          <li
             v-for="(event, j) in getEventsByDay(day)"
             :key="j"
             :class="{ 'selected': event.selected }"
@@ -39,8 +38,8 @@
           >
             <span>{{ event.title }}</span>
             <span>{{ formatDate(event.start.dateTime) }}</span>
-          </dt>
-        </dl>
+          </li>
+        </ul>
       </div>
     </div>
   </div>

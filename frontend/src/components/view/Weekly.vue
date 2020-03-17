@@ -24,12 +24,11 @@
           :key="i"
           class="hour"
           @dragover.prevent
-          @dragenter.prevent
           @drop.prevent="onDrop(day, hour)"
           @click.stop="selectHour(day, hour)"
         >
-          <dl class="event-list">
-            <dt
+          <ul class="event-list">
+            <li
               v-for="(event, j) in getEventsByDayAndHour(day, hour)"
               :key="j"
               :class="{ 'selected': event.selected }"
@@ -39,8 +38,8 @@
               @click.stop="selectEvent(event)"
             >
               <span>{{ event.title }}</span>
-            </dt>
-          </dl>
+            </li>
+          </ul>
         </td>
       </tr>
     </tbody>
