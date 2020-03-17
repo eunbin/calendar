@@ -67,8 +67,8 @@ export default {
     next () {
       this.$emit('next')
     },
-    isSelected (obj) {
-      return obj.value === this.type
+    isSelected (value) {
+      return value === this.type
     }
   }
 }
