@@ -114,8 +114,6 @@ export default {
     width: 100%;
     height: 100%;
     border-spacing: 0;
-    border-collapse: separate;
-    table-layout: fixed;
     thead {
       tr {
         th {
@@ -139,13 +137,6 @@ export default {
               color: var(--color-primary);
             }
           }
-          .short {
-            display: none;
-          }
-          i {
-            vertical-align: middle;
-            font-size: 2em;
-          }
         }
       }
     }
@@ -154,14 +145,6 @@ export default {
       tr {
         background: var(--color-gray);
         height: calc(100%/24);
-        &:nth-child(odd) {
-          background: var(--color-gray);
-        }
-        &:nth-child(4n+0) {
-          td {
-            border-bottom: 1px solid var(--color-primary);
-          }
-        }
         td {
           text-align: center;
           vertical-align: middle;
