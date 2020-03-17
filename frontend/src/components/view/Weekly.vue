@@ -48,12 +48,10 @@
 
 <script>
 import moment from 'moment'
-import dateMixin from '@/mixins/date'
 import { mapGetters } from 'vuex'
 
 export default {
   name: 'Weekly',
-  mixins: [dateMixin],
   props: {
     currentDate: {
       type: Object,
@@ -162,6 +160,7 @@ export default {
             background: #fff;
             border-bottom: 1px solid var(--color-dark-gray);
             border-collapse: separate;
+            min-width: 100px;
             span {
               overflow: hidden;
               text-overflow: ellipsis;

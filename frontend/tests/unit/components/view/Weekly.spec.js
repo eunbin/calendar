@@ -1,13 +1,12 @@
 import Weekly from '@/components/view/Weekly.vue'
-import dateMixin from '@/mixins/date'
 import { createLocalVue, mount } from '@vue/test-utils'
 import { currentDate } from '../../test-data'
 import moment from 'moment'
 import Vuex from 'vuex'
+import datePlugin from '@/plugins/datePlugin'
 
 const createOption = () => {
   return {
-    mixins: [dateMixin],
     propsData: {
       currentDate: moment(currentDate),
       today: moment(),
@@ -18,10 +17,11 @@ const createOption = () => {
 
 const localVue = createLocalVue()
 localVue.use(Vuex)
+localVue.use(datePlugin)
 
 describe('Weekly.vue', () => {
   let store
-  let getters = {
+  const getters = {
     getEventsByDayAndHour: () => () => []
   }
 

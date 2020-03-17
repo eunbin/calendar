@@ -1,19 +1,22 @@
-import { mount } from '@vue/test-utils'
+import { createLocalVue, mount } from '@vue/test-utils'
 import CalendarHeader from '@/components/CalendarHeader.vue'
-import dateMixin from '@/mixins/date'
-import { dateFormat } from '@/types/date'
 import { viewTypes, DEFAULT_VIEW_TYPE } from '@/types/calendar'
 import moment from 'moment'
+import datePlugin from '@/plugins/datePlugin'
+import { dateFormat } from '@/types/date'
+
+const localVue = createLocalVue()
+localVue.use(datePlugin)
 
 const currentDate = moment().hours(0).minutes(0).seconds(0).milliseconds(0).clone()
 
 const createOption = () => {
   return {
-    mixins: [dateMixin],
     propsData: {
       currentDate,
       viewType: DEFAULT_VIEW_TYPE
-    }
+    },
+    localVue
   }
 }
 

@@ -1,17 +1,20 @@
-import { mount, shallowMount } from '@vue/test-utils'
+import { createLocalVue, mount, shallowMount } from '@vue/test-utils'
 import EventModal from '@/components/EventModal'
-import dateMixin from '@/mixins/date'
 import { modalTitles } from '@/types/calendar'
 import { newEvent, eventHasId } from '../test-data'
 import Vue from 'vue'
+import datePlugin from '@/plugins/datePlugin'
+
+const localVue = createLocalVue()
+localVue.use(datePlugin)
 
 const createOption = (event) => {
   return {
-    mixins: [dateMixin],
     propsData: {
       value: true, // open modal,
       event
-    }
+    },
+    localVue
   }
 }
 
