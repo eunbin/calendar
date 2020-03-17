@@ -11,5 +11,6 @@ module.exports = {
     }
   },
   outputDir: '../backend/public',
-  indexPath: '../public/index.html'
+  indexPath: '../public/index.html',
+  productionSourceMap: false,
 }
