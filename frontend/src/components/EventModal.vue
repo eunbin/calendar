@@ -169,17 +169,19 @@ export default {
       this.$emit('close')
     },
     isValidForm () {
-      if (this.model.title && this.model.start && this.model.end) {
+      const isStartNotEmpty = this.model.start && this.model.start.date && this.model.start.dateTime
+      const isEndNotEmpty = this.model.end && this.model.end.date && this.model.end.dateTime
+      if (this.model.title && isStartNotEmpty && isEndNotEmpty) {
         return true
       }
       this.errors = []
       if (!this.model.title) {
         this.errors.push('일정 제목 입력은 필수입니다.')
       }
-      if (!this.model.start) {
+      if (!isStartNotEmpty) {
         this.errors.push('시작날짜 입력은 필수입니다.')
       }
-      if (!this.model.end) {
+      if (!isEndNotEmpty) {
         this.errors.push('종료날짜 입력은 필수입니다.')
       }
       return false
