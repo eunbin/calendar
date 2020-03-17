@@ -179,9 +179,11 @@ export default {
             background: #fff;
             border-bottom: 1px solid var(--color-dark-gray);
             border-collapse: separate;
-            min-width: 100px;
             span {
-              display: block;
+              overflow: hidden;
+              text-overflow: ellipsis;
+              white-space: nowrap;
+              width: 100%;
             }
           }
         }
